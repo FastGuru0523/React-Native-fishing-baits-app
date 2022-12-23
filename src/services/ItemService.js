@@ -11,19 +11,20 @@ export const addItem = newBait => {
       season: newBait.season,
       waterTemp: newBait.waterTemp,
     })
-    .then(() => {
+    .then(res => {
       console.log('Bait added!');
     });
 };
 
 export const getBaits = () => {
   console.log('getBaits function');
-  const allBaits = firestore()
+  let allBaits = [];
+  firestore()
     .collection('baits')
     .get()
-    .then(() => {
-      console.log('get Baits data!');
+    .then(res => {
+      res.forEach(doc => {
+        allBaits.push(doc.data());
+      });
     });
-  console.log(allBaits);
-  return allBaits;
 };

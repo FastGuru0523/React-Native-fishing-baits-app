@@ -1,3 +1,4 @@
+import firestore from '@react-native-firebase/firestore';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -6,43 +7,90 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {addItem, getBaits} from '../services/ItemService';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const AddItem = ({navigation}) => {
   const [name, setName] = useState('');
-  const [type, setType] = useState('');
-  const [season, setSeason] = useState('');
-  const [waterTemp, setWaterTemp] = useState('');
-
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [typeValue, setTypeValue] = useState(null);
+  const [typeItems, setTypeItems] = useState([
+    {label: 'Wake Baits', value: 'Wake Baits'},
+    {label: 'Jerbait', value: 'Jerbait'},
+    {label: 'Squarebill', value: 'Squarebill'},
+    {label: 'Medium diving', value: 'Medium diving'},
+    {label: 'Deep diving', value: 'Deep diving'},
+  ]);
+  const [seasonOpen, setSeasonOpen] = useState(false);
+  const [seasonValue, setSeasonValue] = useState(null);
+  const [seasonItems, setSeasonItems] = useState([
+    {label: 'Spring', value: 'Spring'},
+    {label: 'Summer', value: 'Summer'},
+    {label: 'Fall', value: 'Fall'},
+    {label: 'Winter', value: 'Winter'},
+  ]);
+  const [waterTempOpen, setWaterTempOpen] = useState(false);
+  const [waterTempValue, setWaterTempValue] = useState(null);
+  const [waterTempItems, setWaterTempItems] = useState([
+    {label: '38-50', value: '38-50'},
+    {label: '45-60', value: '45-60'},
+    {label: '60-68', value: '60-68'},
+    {label: '69+', value: '69+'},
+  ]);
   const handleSubmit = () => {
-    const newBait = {
-      name: name,
-      type: type,
-      season: season,
-      waterTemp: waterTemp,
-    };
-    console.log('==============', newBait);
-    addItem(newBait);
-    const allBaits = getBaits();
-    console.log('all Baits ', allBaits);
-    // navigation.navigate('ListItem', allBaits);
+    firestore()
+      .collection('baits')
+      .doc()
+      .set({
+        name: name,
+        type: typeValue,
+        season: seasonValue,
+        waterTemp: waterTempValue,
+      })
+      .then(res => {
+        console.log('Bait added!');
+      });
   };
   return (
     <View style={styles.main}>
-      <Text style={styles.title}>Add Item</Text>
-      <Text>Name</Text>
+      <Text style={styles.title}>Add New Bait</Text>
+      <Text style={styles.labelText}>Bait Name</Text>
       <TextInput style={styles.itemInput} onChangeText={setName} />
-      <Text>Type</Text>
-      <TextInput style={styles.itemInput} onChangeText={setType} />
-      <Text>Season</Text>
-      <TextInput style={styles.itemInput} onChangeText={setSeason} />
-      <Text>Water Temp</Text>
-      <TextInput style={styles.itemInput} onChangeText={setWaterTemp} />
+      <Text style={styles.labelText}>Bait Type</Text>
+      <DropDownPicker
+        open={typeOpen}
+        value={typeValue}
+        items={typeItems}
+        zIndex={300}
+        setOpen={setTypeOpen}
+        setValue={setTypeValue}
+        setItems={setTypeItems}
+      />
+      <Text style={styles.labelText}>Bait Season</Text>
+      <DropDownPicker
+        open={seasonOpen}
+        value={seasonValue}
+        items={seasonItems}
+        zIndex={200}
+        setOpen={setSeasonOpen}
+        setValue={setSeasonValue}
+        setItems={setSeasonItems}
+      />
+      <Text style={styles.labelText}>Bait Water Temp</Text>
+      <DropDownPicker
+        open={waterTempOpen}
+        value={waterTempValue}
+        items={waterTempItems}
+        zIndex={100}
+        setOpen={setWaterTempOpen}
+        setValue={setWaterTempValue}
+        setItems={setWaterTempItems}
+      />
+
       <TouchableHighlight
         style={styles.button}
         underlayColor="white"
         onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Add</Text>
+        <Text style={styles.buttonText}>Add Bait</Text>
       </TouchableHighlight>
     </View>
   );
@@ -60,6 +108,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 25,
     textAlign: 'center',
+  },
+  labelText: {
+    fontSize: 15,
+    color: 'white',
+    padding: 5,
   },
   itemInput: {
     height: 50,

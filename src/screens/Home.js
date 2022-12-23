@@ -1,23 +1,43 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 
 const Home = ({navigation}) => {
   return (
-    <View>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Jane's AddItem"
-        onPress={() => {
-          console.log('444444444444444');
-          navigation.navigate('AddItem');
-        }}
-      />
-      <Button
-        title="Go to Jane's ListItem"
-        onPress={() => navigation.navigate('ListItem', {})}
-      />
+    <View style={styles.main}>
+      <Text style={styles.title}>BassPro Admin</Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Go to Jane's AddItem"
+          onPress={() => {
+            navigation.navigate('AddItem');
+          }}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Go to Jane's ListItem"
+          onPress={() => navigation.navigate('ListItem', {})}
+        />
+      </View>
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    padding: 30,
+    flexDirection: 'column',
+
+    backgroundColor: '#2a8ab7',
+  },
+  title: {
+    marginBottom: 20,
+    fontSize: 25,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    padding: 10,
+  },
+});
 export default Home;
