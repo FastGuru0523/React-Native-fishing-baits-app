@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "762868547655",
+    "project_id": "react-native-apps-cf678",
+    "storage_bucket": "react-native-apps-cf678.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762868547655:android:eb446c7d0ceb1f48527162",
+        "android_client_info": {
+          "package_name": "com.bass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762868547655-2a9u1cdtlksvkvi6m50154mr4ke2eejo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCibG9J94r8eFMHNF21whvoJWOy9kn_Zq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762868547655-2a9u1cdtlksvkvi6m50154mr4ke2eejo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "762868547655-7145mjue8p8og527kpd4n744vqkpeg25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.reactnativefirebase",
+                "app_store_id": "12345"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
