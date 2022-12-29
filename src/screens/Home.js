@@ -7,7 +7,7 @@ const Home = ({navigation}) => {
       <Text style={styles.title}>BassPro Admin</Text>
       <View style={styles.buttonContainer}>
         <Button
-          title="Go to AddItem Page"
+          title="Go to Add Item Page"
           onPress={() => {
             navigation.navigate('AddItem');
           }}
@@ -15,7 +15,7 @@ const Home = ({navigation}) => {
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          title="Go to ListItem Page"
+          title="Go to List Item Page"
           onPress={() => navigation.navigate('ListItem', {})}
         />
       </View>

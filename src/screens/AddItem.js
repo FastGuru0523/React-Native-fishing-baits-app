@@ -9,10 +9,24 @@ import {
   View,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ImagePicker from 'react-native-image-picker';
 import {ScrollView} from 'react-native-virtualized-view';
 
 const AddItem = ({navigation}) => {
   const [name, setName] = useState('');
+  const [photo, setPhoto] = useState('');
+
+  const handleChoosePhoto = () => {
+    const options = {
+      noData: true,
+    };
+    ImagePicker.launchImageLibrary(options, response => {
+      if (response.uri) {
+        setPhoto(response.uri);
+      }
+    });
+  };
+
   const [typeOpen, setTypeOpen] = useState(false);
   const [typeValue, setTypeValue] = useState(null);
   const [typeItems, setTypeItems] = useState([
@@ -387,19 +401,19 @@ const AddItem = ({navigation}) => {
         .doc()
         .set({
           name: name,
-          type: typeValue,
+          type: typeValue.toString(),
           season: seasonValue.toString(),
-          waterTemp: waterTempValue,
-          timeOfDay: timeOfDayValue,
-          waterClarity: waterClarityValue,
-          pattern: patternValue,
-          opacity: opacityValue,
-          wind: windValue,
-          depth: depthValue,
-          weatherCondition: weatherConditionValue,
-          structure: structureValue,
-          instruction: instructionValue,
-          behavior: behaviorValue,
+          waterTemp: waterTempValue.toString(),
+          timeOfDay: timeOfDayValue.toString(),
+          waterClarity: waterClarityValue.toString(),
+          pattern: patternValue.toString(),
+          opacity: opacityValue.toString(),
+          wind: windValue.toString(),
+          depth: depthValue.toString(),
+          weatherCondition: weatherConditionValue.toString(),
+          structure: structureValue.toString(),
+          instruction: instructionValue.toString(),
+          behavior: behaviorValue.toString(),
         })
         .then(res => {
           console.log('Bait added!');
@@ -407,12 +421,24 @@ const AddItem = ({navigation}) => {
     }
   };
   return (
-    <ScrollView style={styles.main}>
+    <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>Add New Bait</Text>
       <Text style={styles.labelText}>Bait Name</Text>
       <TextInput style={styles.itemInput} value={name} onChangeText={setName} />
+      {/* {photo && (
+        <Image source={{uri: photo}} style={{width: 300, height: 300}} />
+      )}
+      <TouchableHighlight
+        style={styles.button}
+        underlayColor="white"
+        onPress={handleChoosePhoto}>
+        <Text style={styles.buttonText}>Select Photo</Text>
+      </TouchableHighlight> */}
       <Text style={styles.labelText}>Bait Type</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={5}
         open={typeOpen}
         value={typeValue}
         items={typeItems}
@@ -446,6 +472,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Water Temp</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={4}
         open={waterTempOpen}
         value={waterTempValue}
         items={waterTempItems}
@@ -456,6 +485,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Time Of Day</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={4}
         open={timeOfDayOpen}
         value={timeOfDayValue}
         items={timeOfDayItems}
@@ -466,6 +498,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Water Clarity</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={3}
         open={waterClarityOpen}
         value={waterClarityValue}
         items={waterClarityItems}
@@ -476,6 +511,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Pattern</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={5}
         open={patternOpen}
         value={patternValue}
         items={patternItems}
@@ -486,6 +524,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Opacity</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={3}
         open={opacityOpen}
         value={opacityValue}
         items={opacityItems}
@@ -496,6 +537,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Wind</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={4}
         open={windOpen}
         value={windValue}
         items={windItems}
@@ -506,6 +550,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Depth</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={4}
         open={depthOpen}
         value={depthValue}
         items={depthItems}
@@ -516,6 +563,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Weather Condition</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={4}
         open={weatherConditionOpen}
         value={weatherConditionValue}
         items={weatherConditionItems}
@@ -526,6 +576,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Structure</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={3}
         open={structureOpen}
         value={structureValue}
         items={structureItems}
@@ -536,6 +589,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Instruction</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={11}
         open={instructionOpen}
         value={instructionValue}
         items={instructionItems}
@@ -546,6 +602,9 @@ const AddItem = ({navigation}) => {
       />
       <Text style={styles.labelText}>Behavior</Text>
       <DropDownPicker
+        multiple={true}
+        min={0}
+        max={5}
         open={behaviorOpen}
         value={behaviorValue}
         items={behaviorItems}
