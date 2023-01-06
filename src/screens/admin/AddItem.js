@@ -425,15 +425,6 @@ const AddItem = ({navigation}) => {
       <Text style={styles.title}>Add New Bait</Text>
       <Text style={styles.labelText}>Bait Name</Text>
       <TextInput style={styles.itemInput} value={name} onChangeText={setName} />
-      {/* {photo && (
-        <Image source={{uri: photo}} style={{width: 300, height: 300}} />
-      )}
-      <TouchableHighlight
-        style={styles.button}
-        underlayColor="white"
-        onPress={handleChoosePhoto}>
-        <Text style={styles.buttonText}>Select Photo</Text>
-      </TouchableHighlight> */}
       <Text style={styles.labelText}>Bait Type</Text>
       <DropDownPicker
         multiple={true}

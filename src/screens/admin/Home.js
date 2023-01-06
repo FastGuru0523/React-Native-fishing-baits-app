@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View} from 'react-native';
 
-const Home = ({navigation}) => {
+const AdminHome = ({navigation}) => {
   return (
     <View style={styles.main}>
       <Text style={styles.title}>BassPro Admin</Text>
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-export default Home;
+export default AdminHome;
