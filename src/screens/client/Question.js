@@ -8,16 +8,44 @@ import Header from '../../components/Header';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-const DropDown = () => {
+const CardQuestion = [
+  'What Season?',
+  'Does the water have current?',
+  'What is the Water Temperature?',
+  // 'What time of day are you fishing?',
+  // 'Select Water Clarity?',
+  // 'Wind Speed?',
+  // 'What depth are you fishing?',
+  // 'What is the weather condition?',
+  // 'What type of structure?',
+  // 'Describe Behavior of fish?',
+];
+
+const CardItems = [
+  [
+    {label: 'Spring', value: 'Spring'},
+    {label: 'Summer', value: 'Summer'},
+    {label: 'Fall', value: 'Fall'},
+    {label: 'Winter', value: 'Winter'},
+  ],
+  [
+    {label: 'Yes', value: 'Yes'},
+    {label: 'No', value: 'No'},
+  ],
+  [
+    {label: '38-50', value: '38-50'},
+    {label: '45-60', value: '45-60'},
+    {label: '60-68', value: '60-68'},
+    {label: '69+', value: '69+'},
+  ],
+];
+
+const DropDown = ({header}) => {
+  const currentItems = CardItems[CardQuestion.indexOf(header)];
+  // console.log('currentItemQuiz ', currentItems);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    {label: 'Wake Baits', value: 'Wake Baits'},
-    {label: 'Jerbait', value: 'Jerbait'},
-    {label: 'Squarebill', value: 'Squarebill'},
-    {label: 'Medium diving', value: 'Medium diving'},
-    {label: 'Deep diving', value: 'Deep diving'},
-  ]);
+  const [items, setItems] = useState(currentItems);
 
   return (
     <DropDownPicker
@@ -30,7 +58,7 @@ const DropDown = () => {
       items={items}
       setOpen={() => {
         setOpen(!open);
-        console.log('typeOpen ', open);
+        console.log('open ', !open);
       }}
       setValue={setValue}
       setItems={setItems}
@@ -69,24 +97,13 @@ const Question = ({navigation}) => {
         </View>
         <View>
           <Swiper
-            cards={[
-              'What Season?',
-              'Does the water have current?',
-              'What is the Water Temperature?',
-              // 'What time of day are you fishing?',
-              // 'Select Water Clarity?',
-              // 'Wind Speed?',
-              // 'What depth are you fishing?',
-              // 'What is the weather condition?',
-              // 'What type of structure?',
-              // 'Describe Behavior of fish?',
-            ]}
+            cards={CardQuestion}
             renderCard={card => {
               return (
                 <View style={styles.card}>
                   <View>
                     <Text style={styles.cardText}>{card}</Text>
-                    <DropDown key={card} />
+                    <DropDown key={card} header={card} />
                   </View>
                   <View
                     style={{
