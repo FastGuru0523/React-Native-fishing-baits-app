@@ -8,10 +8,10 @@ import Header from '../../components/Header';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-const Question = ({navigation}) => {
-  const [typeOpen, setTypeOpen] = useState(false);
-  const [typeValue, setTypeValue] = useState(null);
-  const [typeItems, setTypeItems] = useState([
+const DropDown = () => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
     {label: 'Wake Baits', value: 'Wake Baits'},
     {label: 'Jerbait', value: 'Jerbait'},
     {label: 'Squarebill', value: 'Squarebill'},
@@ -20,14 +20,34 @@ const Question = ({navigation}) => {
   ]);
 
   return (
+    <DropDownPicker
+      multiple={true}
+      min={0}
+      max={5}
+      defaultValue={value}
+      open={open}
+      value={value}
+      items={items}
+      setOpen={() => {
+        setOpen(!open);
+        console.log('typeOpen ', open);
+      }}
+      setValue={setValue}
+      setItems={setItems}
+    />
+  );
+};
+
+const Question = ({navigation}) => {
+  return (
     <View style={styles.container}>
       <StatusBar hidden />
       <View style={styles.backgorundContainer}>
         <BackgroundComponent />
       </View>
-      <View style={{flex: 1}}>
-        <Header style={{flex: 1}} />
-        <View style={{flex: 0.6}}>
+      <View style={{width: '100%', height: '100%'}}>
+        <Header />
+        <View style={{width: '100%'}}>
           <Text
             style={{
               textAlign: 'center',
@@ -47,40 +67,35 @@ const Question = ({navigation}) => {
             Question below
           </Text>
         </View>
-        <View style={styles.cardContainer}>
+        <View>
           <Swiper
             cards={[
               'What Season?',
-              'Does the water have current',
+              'Does the water have current?',
               'What is the Water Temperature?',
-              'What time of day are you fishing?',
-              'Select Water Clarity',
-              'Wind Speed',
-              'What depth are you fishing?',
-              'What is the weather condition?',
-              'What type of structure',
-              'Describe Behavior of fish',
+              // 'What time of day are you fishing?',
+              // 'Select Water Clarity?',
+              // 'Wind Speed?',
+              // 'What depth are you fishing?',
+              // 'What is the weather condition?',
+              // 'What type of structure?',
+              // 'Describe Behavior of fish?',
             ]}
             renderCard={card => {
               return (
                 <View style={styles.card}>
-                  <Text style={styles.cardText}>{card}</Text>
-                  <DropDownPicker
-                    multiple={true}
-                    min={0}
-                    max={5}
-                    defaultValue={typeValue}
-                    open={typeOpen}
-                    value={typeValue}
-                    items={typeItems}
-                    setOpen={() => {
-                      setTypeOpen(!typeOpen);
-                      console.log('typeOpen ', typeOpen);
-                    }}
-                    setValue={setTypeValue}
-                    setItems={setTypeItems}
-                  />
-                  <ButtonComponent text={'Next Question'} />
+                  <View>
+                    <Text style={styles.cardText}>{card}</Text>
+                    <DropDown key={card} />
+                  </View>
+                  <View
+                    style={{
+                      width: '100%',
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                    }}>
+                    <ButtonComponent text={'Next Question'} />
+                  </View>
                 </View>
               );
             }}
@@ -100,29 +115,30 @@ const Question = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   backgorundContainer: {
     position: 'absolute',
     height: deviceHeight,
     width: deviceWidth,
   },
-  cardContainer: {
-    flex: 3,
-  },
   card: {
-    flex: 0.5,
+    height: 350,
     borderRadius: 14,
     borderWidth: 2,
     borderColor: '#E8E8E8',
     backgroundColor: 'white',
     padding: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   cardText: {
     fontSize: 24,
     lineHeight: 30,
     fontWeight: '400',
     marginBottom: 10,
+    textAlign: 'center',
   },
 });
 export default Question;

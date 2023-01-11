@@ -8,7 +8,7 @@ const Header = () => {
     <View style={styles.container}>
       <StatusBar hidden />
 
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={{justifyContent: 'center'}}>
         <Image source={Logo} style={styles.Logo} />
       </View>
       <View
@@ -26,12 +26,11 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.2,
     flexDirection: 'row',
   },
   Logo: {
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
   },
   Nav: {
     width: 30,

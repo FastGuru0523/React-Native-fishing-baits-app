@@ -22,7 +22,7 @@ const Home = ({navigation}) => {
       </View>
       <Pressable
         onPress={() => {
-          navigation.navigate('Suggestion');
+          navigation.navigate('Question');
         }}>
         <Image source={homeLogo} />
       </Pressable>
