@@ -42,12 +42,27 @@ const CardItems = [
 
 const DropDown = ({header}) => {
   const currentItems = CardItems[CardQuestion.indexOf(header)];
+  const isCurrent = header === 'Does the water have current?' ? true : false;
   // console.log('currentItemQuiz ', currentItems);
+  // console.log('isCurrent ', isCurrent);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(currentItems);
 
-  return (
+  return isCurrent ? (
+    <DropDownPicker
+      defaultValue={value}
+      open={open}
+      value={value}
+      items={items}
+      setOpen={() => {
+        setOpen(!open);
+        console.log('open ', !open);
+      }}
+      setValue={setValue}
+      setItems={setItems}
+    />
+  ) : (
     <DropDownPicker
       multiple={true}
       min={0}
