@@ -1,7 +1,6 @@
-import firestore from '@react-native-firebase/firestore';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
-  Alert,
+  Button,
   StyleSheet,
   Text,
   TextInput,
@@ -9,113 +8,89 @@ import {
   View,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import ImagePicker from 'react-native-image-picker';
 import {ScrollView} from 'react-native-virtualized-view';
 
-const AddItem = ({navigation}) => {
-  const [name, setName] = useState('');
-  const [photo, setPhoto] = useState('');
-
-  const handleChoosePhoto = () => {
-    const options = {
-      noData: true,
-    };
-    ImagePicker.launchImageLibrary(options, response => {
-      if (response.uri) {
-        setPhoto(response.uri);
-      }
-    });
-  };
-
-  const [typeOpen, setTypeOpen] = useState(false);
-  const [typeValue, setTypeValue] = useState(null);
-  const [typeItems, setTypeItems] = useState([
+const DropdownItems = [
+  [
     {label: 'Wake Baits', value: 'Wake Baits'},
     {label: 'Jerbait', value: 'Jerbait'},
     {label: 'Squarebill', value: 'Squarebill'},
     {label: 'Medium diving', value: 'Medium diving'},
     {label: 'Deep diving', value: 'Deep diving'},
-  ]);
-  const [seasonOpen, setSeasonOpen] = useState(false);
-  const [seasonValue, setSeasonValue] = useState(null);
-  const [seasonItems, setSeasonItems] = useState([
+  ],
+  [
     {label: 'Spring', value: 'Spring'},
     {label: 'Summer', value: 'Summer'},
     {label: 'Fall', value: 'Fall'},
     {label: 'Winter', value: 'Winter'},
-  ]);
-  const [waterTempOpen, setWaterTempOpen] = useState(false);
-  const [waterTempValue, setWaterTempValue] = useState(null);
-  const [waterTempItems, setWaterTempItems] = useState([
+  ],
+  [
+    {label: 'Yes', value: 'Yes'},
+    {label: 'No', value: 'No'},
+  ],
+  [
     {label: '38-50', value: '38-50'},
     {label: '45-60', value: '45-60'},
     {label: '60-68', value: '60-68'},
     {label: '69+', value: '69+'},
-  ]);
-  const [timeOfDayOpen, settimeOfDayOpen] = useState(false);
-  const [timeOfDayValue, settimeOfDayValue] = useState(null);
-  const [timeOfDayItems, settimeOfDayItems] = useState([
+  ],
+  [
     {label: 'Sunrise', value: 'Sunrise'},
     {label: 'Day', value: 'Day'},
     {label: 'Sunset', value: 'Sunset'},
     {label: 'Night', value: 'Night'},
-  ]);
-
-  const [waterClarityOpen, setWaterClarityOpen] = useState(false);
-  const [waterClarityValue, setWaterClarityValue] = useState(null);
-  const [waterClarityItems, setWaterClarityItems] = useState([
+  ],
+  [
     {label: 'Clear', value: 'Clear'},
     {label: 'Stained', value: 'Stained'},
     {label: 'Dirty', value: 'Dirty'},
-  ]);
-
-  const [opacityOpen, setOpacityOpen] = useState(false);
-  const [opacityValue, setOpacityValue] = useState(null);
-  const [opacityItems, setOpacityItems] = useState([
+  ],
+  [
+    {label: 'Clear', value: 'Clear'},
+    {label: 'Stained', value: 'Stained'},
+    {label: 'Dirty', value: 'Dirty'},
+    {label: 'General', value: 'General'},
+    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
+    {label: 'Rocks', value: 'Rocks'},
+    {label: 'Grass', value: 'Grass'},
+  ],
+  [
     {label: 'Translucent or “ghost”', value: 'Translucent or “ghost”'},
     {label: 'Translucent or opaque', value: 'Translucent or opaque'},
     {label: 'Opaque', value: 'Opaque'},
-  ]);
-
-  const [windOpen, setWindOpen] = useState(false);
-  const [windValue, setWindValue] = useState(null);
-  const [windItems, setWindItems] = useState([
+  ],
+  [
     {label: '0 MPH', value: '0 MPH'},
     {label: '5-10 MPH', value: '5-10 MPH'},
     {label: '10-15 MPH', value: '10-15 MPH'},
     {label: '15-20 MPH', value: '15-20 MPH'},
-  ]);
-
-  const [depthOpen, setDepthOpen] = useState(false);
-  const [depthValue, setDepthValue] = useState(null);
-  const [depthItems, setDepthItems] = useState([
+  ],
+  [
     {label: '0-9 Feet', value: '0-9 Feet'},
     {label: '10-12 Feet', value: '10-12 Feet'},
     {label: '12-20 Feet', value: '12-20 Feet'},
     {label: '20-35 Feet', value: '20-35 Feet'},
     {label: '35+ Feet', value: '35+ Feet'},
-  ]);
-
-  const [weatherConditionOpen, setWeatherConditionOpen] = useState(false);
-  const [weatherConditionValue, setWeatherConditionValue] = useState(null);
-  const [weatherConditionItems, setWeatherConditionItems] = useState([
+  ],
+  [
     {label: 'Bright Sunny', value: 'Bright Sunny'},
     {label: 'Partly Cloudy', value: 'Partly Cloudy'},
     {label: 'Cloudy', value: 'Cloudy'},
     {label: 'Raining', value: 'Raining'},
-  ]);
-
-  const [structureOpen, setStructureOpen] = useState(false);
-  const [structureValue, setStructureValue] = useState(null);
-  const [structureItems, setStructureItems] = useState([
+  ],
+  [
     {label: 'Laydown & Brush', value: 'Laydown & Brush'},
     {label: 'Rock', value: 'Rock'},
     {label: 'Grass', value: 'Grass'},
-  ]);
-
-  const [instructionOpen, setInstructionOpen] = useState(false);
-  const [instructionValue, setInstructionValue] = useState(null);
-  const [instructionItems, setInstructionItems] = useState([
+  ],
+  [
+    {label: 'Skittish', value: 'Skittish'},
+    {label: 'Lock Jaw', value: 'Lock Jaw'},
+    {label: 'Suspended', value: 'Suspended'},
+    {label: 'On the Move', value: 'On the Move'},
+    {label: 'Hidden in Cover', value: 'Hidden in Cover'},
+  ],
+  [
     {label: 'Wake Baits', value: 'Wake Baits'},
     {label: 'Jerkbait', value: 'Jerkbait'},
     {label: 'Squarebill', value: 'Squarebill'},
@@ -127,331 +102,118 @@ const AddItem = ({navigation}) => {
     {label: 'Shallow diving', value: 'Shallow diving'},
     {label: 'Wide wobble', value: 'Wide wobble'},
     {label: 'Silent', value: 'Silent'},
-  ]);
+  ],
+];
 
-  const [behaviorOpen, setBehaviorOpen] = useState(false);
-  const [behaviorValue, setBehaviorValue] = useState(null);
-  const [behaviorItems, setBehaviorItems] = useState([
-    {label: 'Skittish', value: 'Skittish'},
-    {label: 'Lock Jaw', value: 'Lock Jaw'},
-    {label: 'Suspended', value: 'Suspended'},
-    {label: 'On the Move', value: 'On the Move'},
-    {label: 'Hidden in Cover', value: 'Hidden in Cover'},
-  ]);
+const AddItem = ({navigation}) => {
+  // const [name, setName] = useState('');
+  // const [photo, setPhoto] = useState('');
+  const [open, setOpen] = useState(null);
+  const [result, setResult] = useState({
+    type: [],
+    season: [],
+    waterTemp: [],
+    timeOfDay: [],
+    waterClarity: [],
+    opacity: [],
+    wind: [],
+    depth: [],
+    weatherCondition: [],
+    structure: [],
+    behavior: [],
+    instruction: [],
+    current: null,
+    pattern: [],
+  });
 
-  const [currentOpen, setCurrentOpen] = useState(false);
-  const [currentValue, setCurrentValue] = useState(null);
-  const [currentItems, setCurrentItems] = useState([
-    {label: 'Yes', value: 'Yes'},
-    {label: 'No', value: 'No'},
-  ]);
+  // const handleChoosePhoto = () => {
+  //   const options = {
+  //     noData: true,
+  //   };
+  //   ImagePicker.launchImageLibrary(options, response => {
+  //     if (response.uri) {
+  //       setPhoto(response.uri);
+  //     }
+  //   });
+  // };
 
-  const [patternOpen, setPatternOpen] = useState(false);
-  const [patternValue, setPatternValue] = useState(null);
-  const [patternItems, setPatternItems] = useState([
-    {label: 'Clear', value: 'Clear'},
-    {label: 'Stained', value: 'Stained'},
-    {label: 'Dirty', value: 'Dirty'},
-    {label: 'General', value: 'General'},
-    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
-    {label: 'Rocks', value: 'Rocks'},
-    {label: 'Grass', value: 'Grass'},
-  ]);
+  const TextRef = useRef();
 
-  const handleTypeOpen = () => {
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setTypeOpen(!typeOpen);
+  const handleTest = () => {
+    console.log('SSS', TextRef.current);
   };
 
-  const handleSeasonOpen = () => {
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setTypeOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setSeasonOpen(!seasonOpen);
+  const handleChange = text => {
+    TextRef.current = text;
+    console.log(text);
   };
 
-  const handleWaterTempOpen = () => {
-    settimeOfDayOpen(false);
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setWaterTempOpen(!waterTempOpen);
+  const handleOpen = index => {
+    open !== index ? setOpen(index) : setOpen(null);
+    console.log('open ', open);
   };
 
-  const handletimeOfDayOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    settimeOfDayOpen(!timeOfDayOpen);
-  };
-
-  const handleWaterClarityOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setWaterClarityOpen(!waterClarityOpen);
-  };
-
-  const handleOpacityOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setOpacityOpen(!opacityOpen);
-  };
-
-  const handleWindOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setWindOpen(!windOpen);
-  };
-
-  const handleDepthOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setDepthOpen(!depthOpen);
-  };
-
-  const handleWeatherConditionOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setWeatherConditionOpen(!weatherConditionOpen);
-  };
-
-  const handleStructureOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setStructureOpen(!structureOpen);
-  };
-
-  const handleInstructionOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setCurrentOpen(false);
-    setInstructionOpen(!instructionOpen);
-  };
-
-  const handleBehaviorOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setBehaviorOpen(!behaviorOpen);
-  };
-
-  const handleCurrentOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setBehaviorOpen(false);
-    setCurrentOpen(!currentOpen);
-  };
-
-  const handlePatternOpen = () => {
-    setTypeOpen(false);
-    setSeasonOpen(false);
-    setWaterTempOpen(false);
-    settimeOfDayOpen(false);
-    setWaterClarityOpen(false);
-    setOpacityOpen(false);
-    setWindOpen(false);
-    setDepthOpen(false);
-    setWeatherConditionOpen(false);
-    setStructureOpen(false);
-    setInstructionOpen(false);
-    setCurrentOpen(false);
-    setBehaviorOpen(false);
-    setPatternOpen(!patternOpen);
-  };
-
-  const handleSubmit = () => {
-    if (
-      !name ||
-      !typeValue ||
-      !seasonValue ||
-      !waterTempValue ||
-      !timeOfDayValue ||
-      !waterClarityValue ||
-      !patternValue ||
-      !opacityValue ||
-      !windValue ||
-      !depthValue ||
-      !weatherConditionValue ||
-      !structureValue ||
-      !instructionValue ||
-      !behaviorValue
-    ) {
-      Alert.alert(
-        'Warning!',
-        'Please fill up all fields',
-        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-        {cancelable: false},
-      );
+  const handlePick = text => {
+    const temp = result.type;
+    if (!temp.includes(text()[0])) {
+      setResult({...result, type: [...result.type, text()[0]]});
     } else {
-      firestore()
-        .collection('baits')
-        .doc()
-        .set({
-          name: name,
-          type: typeValue.toString(),
-          season: seasonValue.toString(),
-          waterTemp: waterTempValue.toString(),
-          timeOfDay: timeOfDayValue.toString(),
-          waterClarity: waterClarityValue.toString(),
-          pattern: patternValue.toString(),
-          opacity: opacityValue.toString(),
-          wind: windValue.toString(),
-          depth: depthValue.toString(),
-          weatherCondition: weatherConditionValue.toString(),
-          structure: structureValue.toString(),
-          instruction: instructionValue.toString(),
-          behavior: behaviorValue.toString(),
-        })
-        .then(res => {
-          console.log('Bait added!');
-        });
+      setResult({
+        ...result,
+        type: [...result.type.filter(t => t !== text()[0])],
+      });
     }
   };
+
+  // const handlePick = (text, stateName) => {
+  //   const temp = result[stateName];
+  //   if (!temp.includes(text()[0])) {
+  //     setResult({...result, stateName: [...result[stateName], text()[0]]});
+  //   } else {
+  //     setResult({
+  //       ...result,
+  //       stateName: [...result[stateName].filter(t => t !== text()[0])],
+  //     });
+  //   }
+  // };
+
   return (
     <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>Add New Bait</Text>
-      <Text style={styles.labelText}>Bait Name</Text>
-      <TextInput style={styles.itemInput} value={name} onChangeText={setName} />
+      <View>
+        <Text style={styles.labelText}>Bait Name</Text>
+        <TextInput
+          style={styles.itemInput}
+          onChangeText={text => handleChange(text)}
+        />
+
+        <Button onPress={handleTest} title="Test" />
+      </View>
       <Text style={styles.labelText}>Bait Type</Text>
       <DropDownPicker
         multiple={true}
         min={0}
         max={5}
-        open={typeOpen}
-        value={typeValue}
-        items={typeItems}
+        open={open == 0}
+        value={result.type}
+        items={DropdownItems[0]}
         zIndex={1500}
-        setOpen={handleTypeOpen}
-        setValue={setTypeValue}
-        setItems={setTypeItems}
+        setOpen={() => handleOpen(0)}
+        setValue={handlePick}
       />
       <Text style={styles.labelText}>Season</Text>
       <DropDownPicker
         multiple={true}
         min={0}
         max={4}
-        open={seasonOpen}
-        value={seasonValue}
-        items={seasonItems}
+        open={open == 1}
+        value={result.season}
+        items={DropdownItems[1]}
         zIndex={1400}
-        setOpen={handleSeasonOpen}
-        setValue={setSeasonValue}
-        setItems={setSeasonItems}
+        setOpen={() => handleOpen(1)}
+        setValue={handlePick}
       />
-      <Text style={styles.labelText}>Current</Text>
+      {/*<Text style={styles.labelText}>Current</Text>
       <DropDownPicker
         open={currentOpen}
         value={currentValue}
@@ -499,8 +261,8 @@ const AddItem = ({navigation}) => {
         setOpen={handleWaterClarityOpen}
         setValue={setWaterClarityValue}
         setItems={setWaterClarityItems}
-      />
-      <Text style={styles.labelText}>Pattern</Text>
+      /> */}
+      {/* <Text style={styles.labelText}>Pattern</Text>
       <DropDownPicker
         multiple={true}
         min={0}
@@ -603,11 +365,12 @@ const AddItem = ({navigation}) => {
         setOpen={handleBehaviorOpen}
         setValue={setBehaviorValue}
         setItems={setBehaviorItems}
-      />
+      /> */}
       <TouchableHighlight
         style={styles.button}
         underlayColor="white"
-        onPress={handleSubmit}>
+        // onPress={handleSubmit}
+      >
         <Text style={styles.buttonText}>Add Bait</Text>
       </TouchableHighlight>
       <View style={styles.space} />
