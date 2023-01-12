@@ -1,9 +1,25 @@
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const Item = ({data}) => (
   <View style={styles.itemCard}>
+    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+      <Image
+        style={{width: 250, height: 200, resizeMode: 'stretch'}}
+        source={{
+          uri: data.imageUri,
+        }}
+      />
+    </View>
     <Text style={styles.smallText}>Name: {data.name}</Text>
     <Text style={styles.smallText}>Type: {data.type.toString()}</Text>
     <Text style={styles.smallText}>Season: {data.season.toString()}</Text>
@@ -60,6 +76,14 @@ const ListItem = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AdminHome');
+        }}>
+        <Text style={{textAlign: 'right', paddingRight: 30}}>
+          Go to admin home screen...
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonComponent from './ButtonComponent';
 
-const BaitCard = ({baitImage}) => {
+const BaitCard = ({detail}) => {
   const [state, setState] = useState({
     pattern: false,
     addInfo: false,
@@ -14,10 +14,15 @@ const BaitCard = ({baitImage}) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={baitImage} style={styles.image} />
+        <Image
+          source={{
+            uri: detail.imageUri,
+          }}
+          style={styles.image}
+        />
       </View>
       <View>
-        <Text style={styles.baitName}>Bait Name</Text>
+        <Text style={styles.baitName}>{detail.name}</Text>
       </View>
 
       <View style={state.pattern && styles.fullContainer}>

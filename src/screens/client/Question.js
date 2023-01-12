@@ -88,11 +88,44 @@ const CardItems = [
   ],
 ];
 
+const Details = [
+  'season',
+  'current',
+  'waterTemp',
+  'timeOfDay',
+  'waterClarity',
+  'wind',
+  'depth',
+  'weatherCondition',
+  'structure',
+  'behavior',
+];
+
+const RequestData = {
+  season: '',
+  current: '',
+  waterTemp: '',
+  timeOfDay: '',
+  waterClarity: '',
+  wind: '',
+  depth: '',
+  weatherCondition: '',
+  structure: '',
+  behavior: '',
+};
+
 const DropDown = ({header}) => {
-  const currentItems = CardItems[CardQuestion.indexOf(header)];
+  const Index = CardQuestion.indexOf(header);
+  const currentItems = CardItems[Index];
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(currentItems);
+
+  const handleSetValue = text => {
+    setValue(text);
+    RequestData[Details[Index]] = text();
+    // console.log('request data ', RequestData);
+  };
 
   return (
     <DropDownPicker
@@ -113,7 +146,7 @@ const DropDown = ({header}) => {
         setOpen(!open);
         console.log('open ', !open);
       }}
-      setValue={setValue}
+      setValue={handleSetValue}
       setItems={setItems}
     />
   );
@@ -187,6 +220,11 @@ const Question = ({navigation}) => {
                   </View>
                 </View>
               );
+            }}
+            onSwipedLeft={cardIndex => {
+              if (cardIndex === 9) {
+                navigation.navigate('Suggestion', {Request: RequestData});
+              }
             }}
             cardVerticalMargin={0}
             cardHorizontalMargin={50}

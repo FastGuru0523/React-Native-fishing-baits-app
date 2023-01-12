@@ -5,6 +5,8 @@ import {
   Pressable,
   StatusBar,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import homeLogo from '../../assets/images/home-logo.png';
@@ -22,10 +24,18 @@ const Home = ({navigation}) => {
       </View>
       <Pressable
         onPress={() => {
-          navigation.navigate('ListItem');
+          navigation.navigate('Question');
         }}>
         <Image source={homeLogo} />
       </Pressable>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AdminHome');
+        }}>
+        <Text style={{textAlign: 'right', paddingRight: 30}}>
+          Go to admin home...
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

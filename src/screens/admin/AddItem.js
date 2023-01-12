@@ -2,13 +2,19 @@ import firestore from '@react-native-firebase/firestore';
 import React, {useRef, useState} from 'react';
 import {
   Alert,
+  Image,
+  PermissionsAndroid,
+  Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ScrollView} from 'react-native-virtualized-view';
 
 const DropdownItems = [
@@ -140,20 +146,172 @@ const AddItem = ({navigation}) => {
     instruction: [],
     current: null,
     pattern: [],
+    filePath: null,
   });
-
-  // const handleChoosePhoto = () => {
-  //   const options = {
-  //     noData: true,
-  //   };
-  //   ImagePicker.launchImageLibrary(options, response => {
-  //     if (response.uri) {
-  //       setPhoto(response.uri);
-  //     }
-  //   });
-  // };
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const TextRef = useRef();
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs camera permission',
+          },
+        );
+        // If CAMERA Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
+  const requestExternalWritePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs write permission',
+          },
+        );
+        // If WRITE_EXTERNAL_STORAGE Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        alert('Write permission err', err);
+      }
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const captureImage = async type => {
+    let options = {
+      mediaType: type,
+      maxWidth: 300,
+      maxHeight: 550,
+      quality: 1,
+      videoQuality: 'low',
+      durationLimit: 30, //Video max duration in seconds
+      saveToPhotos: true,
+    };
+    let isCameraPermitted = await requestCameraPermission();
+    let isStoragePermitted = await requestExternalWritePermission();
+    if (isCameraPermitted && isStoragePermitted) {
+      launchCamera(options, response => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+          alert('User cancelled camera picker');
+          return;
+        } else if (response.errorCode == 'camera_unavailable') {
+          alert('Camera not available on device');
+          return;
+        } else if (response.errorCode == 'permission') {
+          alert('Permission not satisfied');
+          return;
+        } else if (response.errorCode == 'others') {
+          alert(response.errorMessage);
+          return;
+        }
+        console.log('base64 -> ', response.base64);
+        // console.log('uri -> ', response.uri);
+        // console.log('width -> ', response.width);
+        // console.log('height -> ', response.height);
+        // console.log('fileSize -> ', response.fileSize);
+        // console.log('type -> ', response.type);
+        // console.log('fileName -> ', response.fileName);
+        // setFilePath(response);
+        setResult({filePath: response.base64});
+      });
+    }
+  };
+
+  const chooseFile = type => {
+    let options = {
+      mediaType: type,
+      maxWidth: 300,
+      maxHeight: 550,
+      quality: 1,
+    };
+    launchImageLibrary(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        alert('User cancelled camera picker');
+        return;
+      } else if (response.errorCode == 'camera_unavailable') {
+        alert('Camera not available on device');
+        return;
+      } else if (response.errorCode == 'permission') {
+        alert('Permission not satisfied');
+        return;
+      } else if (response.errorCode == 'others') {
+        alert(response.errorMessage);
+        return;
+      }
+      console.log('base64 -> ', response.base64);
+      //   console.log('uri -> ', response.uri);
+      //   console.log('width -> ', response.width);
+      //   console.log('height -> ', response.height);
+      //   console.log('fileSize -> ', response.fileSize);
+      //   console.log('type -> ', response.type);
+      //   console.log('fileName -> ', response.fileName);
+      // setFilePath(response);
+      setResult({filePath: response.base64});
+    });
+  };
+
+  const ImagePicker = () => {
+    return (
+      <SafeAreaView style={{paddingTop: 5}}>
+        <View style={styles.container}>
+          <Image
+            source={{
+              uri: 'data:image/jpeg;base64,' + result.filePath,
+            }}
+            style={styles.imageStyle}
+          />
+          {/* <Image source={{uri: filePath.uri}} style={styles.imageStyle} /> */}
+          <Text style={styles.textStyle}>{result.filePath}</Text>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.buttonStyle}
+            onPress={() => captureImage('photo')}>
+            <Text style={styles.textStyle}>Launch Camera for Image</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.buttonStyle}
+            onPress={() => captureImage('video')}>
+            <Text style={styles.textStyle}>Launch Camera for Video</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.buttonStyle}
+            onPress={() => chooseFile('photo')}>
+            <Text style={styles.textStyle}>Choose Image</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.buttonStyle}
+            onPress={() => chooseFile('video')}>
+            <Text style={styles.textStyle}>Choose Video</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  };
 
   const handleChange = text => {
     TextRef.current = text;
@@ -227,6 +385,7 @@ const AddItem = ({navigation}) => {
           instruction: result.instruction,
           behavior: result.behavior,
           current: result.current,
+          imageUri: result.filePath,
         })
         .then(res => {
           console.log('Bait added!', result);
@@ -278,6 +437,16 @@ const AddItem = ({navigation}) => {
         />
       </View>
       <View>
+        <TouchableOpacity
+          style={styles.imagePickerStyle}
+          onPress={() => {
+            setPickerOpen(!pickerOpen);
+          }}>
+          <Text style={styles.imagePickerText}>Choose the bait image.</Text>
+        </TouchableOpacity>
+        {pickerOpen && <ImagePicker />}
+      </View>
+      <View>
         <Dropdowns />
       </View>
       <TouchableHighlight
@@ -286,6 +455,15 @@ const AddItem = ({navigation}) => {
         onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add Bait</Text>
       </TouchableHighlight>
+      <TouchableOpacity
+        style={{paddingTop: 10}}
+        onPress={() => {
+          navigation.navigate('AdminHome');
+        }}>
+        <Text style={{textAlign: 'right', paddingRight: 30}}>
+          Go to admin home screen...
+        </Text>
+      </TouchableOpacity>
       <View style={styles.space} />
     </ScrollView>
   );
@@ -335,6 +513,49 @@ const styles = StyleSheet.create({
   },
   space: {
     marginVertical: 50,
+  },
+
+  imagePickerStyle: {
+    backgroundColor: 'white',
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 10,
+    borderColor: '#000',
+    borderWidth: 0.5,
+  },
+  imagePickerText: {
+    fontSize: 15,
+    color: 'black',
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 20,
+  },
+  textStyle: {
+    padding: 10,
+    color: 'black',
+    textAlign: 'center',
+  },
+  buttonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 5,
+    marginVertical: 10,
+    width: 250,
+  },
+  imageStyle: {
+    width: 200,
+    height: 200,
+    margin: 5,
   },
 });
 

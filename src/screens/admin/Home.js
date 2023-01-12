@@ -19,6 +19,12 @@ const AdminHome = ({navigation}) => {
           onPress={() => navigation.navigate('ListItem', {})}
         />
       </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Go to Home Page"
+          onPress={() => navigation.navigate('Home', {})}
+        />
+      </View>
     </View>
   );
 };

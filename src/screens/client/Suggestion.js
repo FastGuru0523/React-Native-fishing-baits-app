@@ -1,4 +1,5 @@
-import React from 'react';
+import firestore from '@react-native-firebase/firestore';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -18,7 +19,68 @@ const BaitImage4 = require('../../assets/images/baits/bait4.png');
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-const Suggestion = ({navigation}) => {
+const Details = [
+  'season',
+  'current',
+  'waterTemp',
+  'timeOfDay',
+  'waterClarity',
+  'wind',
+  'depth',
+  'weatherCondition',
+  'structure',
+  'behavior',
+];
+
+const Suggestion = ({navigation, route}) => {
+  // console.log('isReceive ', route.params.Request);
+  const [baitData, setBaitData] = useState([]);
+  const Request = route.params.Request;
+
+  const filterWithRequest = temp => {
+    const baits = [];
+    // console.log('temp ', temp[0]);
+    temp.map(item => {
+      let isIncluded = true;
+      // console.log('item ', item.data.name);
+      Details.map(detail => {
+        if (!item.data[detail].includes(Request[detail])) {
+          isIncluded = false;
+          // console.log('hi');
+        }
+      });
+      if (isIncluded) {
+        baits.push(item.data);
+      }
+    });
+    setBaitData(baits);
+    // console.log('baitData ', baitData);
+  };
+
+  useEffect(() => {
+    firestore()
+      .collection('baits')
+      .get()
+      .then(res => {
+        let temp = [];
+        res.forEach(doc => {
+          const bait = {};
+          bait.data = doc.data();
+          bait.id = doc.id;
+          // console.log('bait ', bait);
+          temp.push(bait);
+        });
+        // setBaitData(temp);
+        filterWithRequest(temp);
+      });
+  });
+
+  const RenderBaitCard = () => {
+    return baitData.map((bait, index) => {
+      return <BaitCard key={index} detail={bait} />;
+    });
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -50,10 +112,7 @@ const Suggestion = ({navigation}) => {
           </Text>
         </View>
         <View style={{flex: 1, paddingHorizontal: 45}}>
-          <BaitCard baitImage={BaitImage1} />
-          <BaitCard baitImage={BaitImage2} />
-          <BaitCard baitImage={BaitImage3} />
-          <BaitCard baitImage={BaitImage4} />
+          <RenderBaitCard />
         </View>
       </ScrollView>
     </View>
