@@ -1,6 +1,7 @@
+import firestore from '@react-native-firebase/firestore';
 import React, {useRef, useState} from 'react';
 import {
-  Button,
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -25,10 +26,6 @@ const DropdownItems = [
     {label: 'Winter', value: 'Winter'},
   ],
   [
-    {label: 'Yes', value: 'Yes'},
-    {label: 'No', value: 'No'},
-  ],
-  [
     {label: '38-50', value: '38-50'},
     {label: '45-60', value: '45-60'},
     {label: '60-68', value: '60-68'},
@@ -44,15 +41,6 @@ const DropdownItems = [
     {label: 'Clear', value: 'Clear'},
     {label: 'Stained', value: 'Stained'},
     {label: 'Dirty', value: 'Dirty'},
-  ],
-  [
-    {label: 'Clear', value: 'Clear'},
-    {label: 'Stained', value: 'Stained'},
-    {label: 'Dirty', value: 'Dirty'},
-    {label: 'General', value: 'General'},
-    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
-    {label: 'Rocks', value: 'Rocks'},
-    {label: 'Grass', value: 'Grass'},
   ],
   [
     {label: 'Translucent or “ghost”', value: 'Translucent or “ghost”'},
@@ -91,6 +79,19 @@ const DropdownItems = [
     {label: 'Hidden in Cover', value: 'Hidden in Cover'},
   ],
   [
+    {label: 'Clear', value: 'Clear'},
+    {label: 'Stained', value: 'Stained'},
+    {label: 'Dirty', value: 'Dirty'},
+    {label: 'General', value: 'General'},
+    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
+    {label: 'Rocks', value: 'Rocks'},
+    {label: 'Grass', value: 'Grass'},
+  ],
+  [
+    {label: 'Yes', value: 'Yes'},
+    {label: 'No', value: 'No'},
+  ],
+  [
     {label: 'Wake Baits', value: 'Wake Baits'},
     {label: 'Jerkbait', value: 'Jerkbait'},
     {label: 'Squarebill', value: 'Squarebill'},
@@ -105,9 +106,24 @@ const DropdownItems = [
   ],
 ];
 
+const Fields = [
+  'type',
+  'season',
+  'waterTemp',
+  'timeOfDay',
+  'waterClarity',
+  'opacity',
+  'wind',
+  'depth',
+  'weatherCondition',
+  'structure',
+  'behavior',
+  'instruction',
+  'current',
+  'pattern',
+];
+
 const AddItem = ({navigation}) => {
-  // const [name, setName] = useState('');
-  // const [photo, setPhoto] = useState('');
   const [open, setOpen] = useState(null);
   const [result, setResult] = useState({
     type: [],
@@ -139,10 +155,6 @@ const AddItem = ({navigation}) => {
 
   const TextRef = useRef();
 
-  const handleTest = () => {
-    console.log('SSS', TextRef.current);
-  };
-
   const handleChange = text => {
     TextRef.current = text;
     console.log(text);
@@ -153,29 +165,107 @@ const AddItem = ({navigation}) => {
     console.log('open ', open);
   };
 
-  const handlePick = text => {
-    const temp = result.type;
-    if (!temp.includes(text()[0])) {
-      setResult({...result, type: [...result.type, text()[0]]});
+  const handlePick = (text, stateName) => {
+    console.log('stateName ', stateName);
+    const temp = result[stateName];
+    if (stateName === 'current') {
+      temp === text()
+        ? setResult({...result, [stateName]: null})
+        : setResult({...result, [stateName]: text()});
+      console.log('isChanged ', result.current);
+    } else if (!temp.includes(text()[0])) {
+      setResult({...result, [stateName]: [...result[stateName], text()[0]]});
     } else {
       setResult({
         ...result,
-        type: [...result.type.filter(t => t !== text()[0])],
+        [stateName]: [...result[stateName].filter(t => t !== text()[0])],
       });
     }
   };
 
-  // const handlePick = (text, stateName) => {
-  //   const temp = result[stateName];
-  //   if (!temp.includes(text()[0])) {
-  //     setResult({...result, stateName: [...result[stateName], text()[0]]});
-  //   } else {
-  //     setResult({
-  //       ...result,
-  //       stateName: [...result[stateName].filter(t => t !== text()[0])],
-  //     });
-  //   }
-  // };
+  const handleSubmit = () => {
+    if (
+      !TextRef.current ||
+      !result.type.length ||
+      !result.season.length ||
+      !result.waterTemp.length ||
+      !result.timeOfDay.length ||
+      !result.waterClarity.length ||
+      !result.pattern.length ||
+      !result.opacity.length ||
+      !result.wind.length ||
+      !result.depth.length ||
+      !result.weatherCondition.length ||
+      !result.structure.length ||
+      !result.instruction.length ||
+      !result.behavior.length ||
+      !result.current
+    ) {
+      Alert.alert(
+        'Warning!',
+        'Please fill up all fields',
+        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        {cancelable: false},
+      );
+    } else {
+      firestore()
+        .collection('baits')
+        .doc()
+        .set({
+          name: TextRef.current,
+          type: result.type,
+          season: result.season,
+          waterTemp: result.waterTemp,
+          timeOfDay: result.timeOfDay,
+          waterClarity: result.waterClarity,
+          pattern: result.pattern,
+          opacity: result.opacity,
+          wind: result.wind,
+          depth: result.depth,
+          weatherCondition: result.weatherCondition,
+          structure: result.structure,
+          instruction: result.instruction,
+          behavior: result.behavior,
+          current: result.current,
+        })
+        .then(res => {
+          console.log('Bait added!', result);
+        });
+    }
+  };
+
+  const Dropdowns = () => {
+    return Fields.map((field, index) => {
+      return field === 'current' ? (
+        <View key={index}>
+          <Text style={styles.labelText}>{field}</Text>
+          <DropDownPicker
+            open={open === index}
+            value={result[field]}
+            items={DropdownItems[index]}
+            zIndex={1500 - index * 100}
+            setOpen={() => handleOpen(index)}
+            setValue={text => handlePick(text, field)}
+          />
+        </View>
+      ) : (
+        <View key={index}>
+          <Text style={styles.labelText}>{field}</Text>
+          <DropDownPicker
+            multiple={true}
+            min={0}
+            max={5}
+            open={open === index}
+            value={result[field]}
+            items={DropdownItems[index]}
+            zIndex={1500 - index * 100}
+            setOpen={() => handleOpen(index)}
+            setValue={text => handlePick(text, field)}
+          />
+        </View>
+      );
+    });
+  };
 
   return (
     <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
@@ -186,191 +276,14 @@ const AddItem = ({navigation}) => {
           style={styles.itemInput}
           onChangeText={text => handleChange(text)}
         />
-
-        <Button onPress={handleTest} title="Test" />
       </View>
-      <Text style={styles.labelText}>Bait Type</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={5}
-        open={open == 0}
-        value={result.type}
-        items={DropdownItems[0]}
-        zIndex={1500}
-        setOpen={() => handleOpen(0)}
-        setValue={handlePick}
-      />
-      <Text style={styles.labelText}>Season</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={open == 1}
-        value={result.season}
-        items={DropdownItems[1]}
-        zIndex={1400}
-        setOpen={() => handleOpen(1)}
-        setValue={handlePick}
-      />
-      {/*<Text style={styles.labelText}>Current</Text>
-      <DropDownPicker
-        open={currentOpen}
-        value={currentValue}
-        items={currentItems}
-        zIndex={1300}
-        setOpen={handleCurrentOpen}
-        setValue={setCurrentValue}
-        setItems={setCurrentItems}
-      />
-      <Text style={styles.labelText}>Water Temp</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={waterTempOpen}
-        value={waterTempValue}
-        items={waterTempItems}
-        zIndex={1200}
-        setOpen={handleWaterTempOpen}
-        setValue={setWaterTempValue}
-        setItems={setWaterTempItems}
-      />
-      <Text style={styles.labelText}>Time Of Day</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={timeOfDayOpen}
-        value={timeOfDayValue}
-        items={timeOfDayItems}
-        zIndex={1100}
-        setOpen={handletimeOfDayOpen}
-        setValue={settimeOfDayValue}
-        setItems={settimeOfDayItems}
-      />
-      <Text style={styles.labelText}>Water Clarity</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={3}
-        open={waterClarityOpen}
-        value={waterClarityValue}
-        items={waterClarityItems}
-        zIndex={1000}
-        setOpen={handleWaterClarityOpen}
-        setValue={setWaterClarityValue}
-        setItems={setWaterClarityItems}
-      /> */}
-      {/* <Text style={styles.labelText}>Pattern</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={5}
-        open={patternOpen}
-        value={patternValue}
-        items={patternItems}
-        zIndex={900}
-        setOpen={handlePatternOpen}
-        setValue={setPatternValue}
-        setItems={setPatternItems}
-      />
-      <Text style={styles.labelText}>Opacity</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={3}
-        open={opacityOpen}
-        value={opacityValue}
-        items={opacityItems}
-        zIndex={800}
-        setOpen={handleOpacityOpen}
-        setValue={setOpacityValue}
-        setItems={setOpacityItems}
-      />
-      <Text style={styles.labelText}>Wind</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={windOpen}
-        value={windValue}
-        items={windItems}
-        zIndex={700}
-        setOpen={handleWindOpen}
-        setValue={setWindValue}
-        setItems={setWindItems}
-      />
-      <Text style={styles.labelText}>Depth</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={depthOpen}
-        value={depthValue}
-        items={depthItems}
-        zIndex={600}
-        setOpen={handleDepthOpen}
-        setValue={setDepthValue}
-        setItems={setDepthItems}
-      />
-      <Text style={styles.labelText}>Weather Condition</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={4}
-        open={weatherConditionOpen}
-        value={weatherConditionValue}
-        items={weatherConditionItems}
-        zIndex={500}
-        setOpen={handleWeatherConditionOpen}
-        setValue={setWeatherConditionValue}
-        setItems={setWeatherConditionItems}
-      />
-      <Text style={styles.labelText}>Structure</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={3}
-        open={structureOpen}
-        value={structureValue}
-        items={structureItems}
-        zIndex={400}
-        setOpen={handleStructureOpen}
-        setValue={setStructureValue}
-        setItems={setStructureItems}
-      />
-      <Text style={styles.labelText}>Instruction</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={11}
-        open={instructionOpen}
-        value={instructionValue}
-        items={instructionItems}
-        zIndex={300}
-        setOpen={handleInstructionOpen}
-        setValue={setInstructionValue}
-        setItems={setInstructionItems}
-      />
-      <Text style={styles.labelText}>Behavior</Text>
-      <DropDownPicker
-        multiple={true}
-        min={0}
-        max={5}
-        open={behaviorOpen}
-        value={behaviorValue}
-        items={behaviorItems}
-        zIndex={200}
-        setOpen={handleBehaviorOpen}
-        setValue={setBehaviorValue}
-        setItems={setBehaviorItems}
-      /> */}
+      <View>
+        <Dropdowns />
+      </View>
       <TouchableHighlight
         style={styles.button}
         underlayColor="white"
-        // onPress={handleSubmit}
-      >
+        onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add Bait</Text>
       </TouchableHighlight>
       <View style={styles.space} />

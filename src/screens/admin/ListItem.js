@@ -5,21 +5,30 @@ import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 const Item = ({data}) => (
   <View style={styles.itemCard}>
     <Text style={styles.smallText}>Name: {data.name}</Text>
-    <Text style={styles.smallText}>Type: {data.type}</Text>
-    <Text style={styles.smallText}>Season: {data.season}</Text>
-    <Text style={styles.smallText}>Water Temperature: {data.waterTemp}</Text>
-    <Text style={styles.smallText}>Time of day: {data.timeOfDay}</Text>
-    <Text style={styles.smallText}>Water Clarity: {data.waterClarity}</Text>
-    <Text style={styles.smallText}>Pattern: {data.pattern}</Text>
-    <Text style={styles.smallText}>Opacity: {data.opacity}</Text>
-    <Text style={styles.smallText}>Wind: {data.wind}</Text>
-    <Text style={styles.smallText}>Depth: {data.depth}</Text>
+    <Text style={styles.smallText}>Type: {data.type.toString()}</Text>
+    <Text style={styles.smallText}>Season: {data.season.toString()}</Text>
     <Text style={styles.smallText}>
-      Weather Condition: {data.weatherCondition}
+      Water Temperature: {data.waterTemp.toString()}
     </Text>
-    <Text style={styles.smallText}>Structure: {data.structure}</Text>
-    <Text style={styles.smallText}>Behavior: {data.behavior}</Text>
-    <Text style={styles.smallText}>Instruction: {data.instruction}</Text>
+    <Text style={styles.smallText}>
+      Time of day: {data.timeOfDay.toString()}
+    </Text>
+    <Text style={styles.smallText}>
+      Water Clarity: {data.waterClarity.toString()}
+    </Text>
+    <Text style={styles.smallText}>Pattern: {data.pattern.toString()}</Text>
+    <Text style={styles.smallText}>Opacity: {data.opacity.toString()}</Text>
+    <Text style={styles.smallText}>Wind: {data.wind.toString()}</Text>
+    <Text style={styles.smallText}>Depth: {data.depth.toString()}</Text>
+    <Text style={styles.smallText}>
+      Weather Condition: {data.weatherCondition.toString()}
+    </Text>
+    <Text style={styles.smallText}>current: {data.current}</Text>
+    <Text style={styles.smallText}>Structure: {data.structure.toString()}</Text>
+    <Text style={styles.smallText}>Behavior: {data.behavior.toString()}</Text>
+    <Text style={styles.smallText}>
+      Instruction: {data.instruction.toString()}
+    </Text>
   </View>
 );
 
