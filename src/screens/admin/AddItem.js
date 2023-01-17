@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Image,
@@ -19,11 +19,22 @@ import {ScrollView} from 'react-native-virtualized-view';
 
 const DropdownItems = [
   [
-    {label: 'Wake Baits', value: 'Wake Baits'},
-    {label: 'Jerbait', value: 'Jerbait'},
-    {label: 'Squarebill', value: 'Squarebill'},
-    {label: 'Medium diving', value: 'Medium diving'},
-    {label: 'Deep diving', value: 'Deep diving'},
+    {label: 'Crankbaits', value: 'Crankbaits'},
+    {label: 'Spinnerbaits', value: 'Spinnerbaits'},
+    {label: 'Plastic worms', value: 'Plastic worms'},
+    {label: 'Topwater baits', value: 'Topwater baits'},
+    {label: 'Jigs', value: 'Jigs'},
+    {label: 'Swimbaits', value: 'Swimbaits'},
+    {label: 'Jerkbaits', value: 'Jerkbaits'},
+    {label: 'Tube baits', value: 'Tube baits'},
+    {label: 'Grubs', value: 'Grubs'},
+    {label: 'Chatterbaits', value: 'Chatterbaits'},
+    {label: 'Frogs', value: 'Frogs'},
+    {label: 'Crawfish', value: 'Crawfish'},
+    {
+      label: 'Soft plastic creature baits',
+      value: 'Soft plastic creature baits',
+    },
   ],
   [
     {label: 'Spring', value: 'Spring'},
@@ -129,10 +140,59 @@ const Fields = [
   'pattern',
 ];
 
+const typeItems = {
+  Crankbaits: [
+    {label: 'Lipless Crankbaits', value: 'Lipless Crankbaits'},
+    {label: 'Diving Crankbaits', value: 'Diving Crankbaits'},
+    {label: 'Shallow Running Crankbaits', value: 'Shallow Running Crankbaits'},
+    {label: 'Medium Diving Crankbaits', value: 'Medium Diving Crankbaits'},
+    {label: 'Deep Diving Crankbaits', value: 'Deep Diving Crankbaits'},
+    {label: 'Rattle Traps', value: 'Rattle Traps'},
+    {label: 'Squarebill Crankbaits', value: 'Squarebill Crankbaits'},
+    {label: 'Lipless Rattle Traps', value: 'Lipless Rattle Traps'},
+    {label: 'Jerkbaits', value: 'Jerkbaits'},
+    {label: 'Minnow Crankbaits', value: 'Minnow Crankbaits'},
+    {label: 'Stick baits', value: 'Stick baits'},
+    {label: 'Blade baits', value: 'Blade baits'},
+    {label: 'Flat-sided Crankbaits', value: 'Flat-sided Crankbaits'},
+    {label: 'Bull Crankbait', value: 'Bull Crankbait'},
+    {label: 'Wake baits', value: 'Wake baits'},
+  ],
+  Spinnerbaits: [
+    {label: 'Single Blade Spinnerbaits', value: 'Single Blade Spinnerbaits'},
+    {label: 'Double Blade Spinnerbaits', value: 'Double Blade Spinnerbaits'},
+    {label: 'Chatterbaits', value: 'Chatterbaits'},
+    {label: 'Buzzbaits', value: 'Buzzbaits'},
+    {label: 'Bladed jigs', value: 'Bladed jigs'},
+    {label: 'Inline Spinners', value: 'Inline Spinners'},
+    {
+      label: 'Colorado/Indiana Blade Spinnerbaits',
+      value: 'Colorado/Indiana Blade Spinnerbaits',
+    },
+    {
+      label: 'Willow-leaf Blade Spinnerbaits',
+      value: 'Willow-leaf Blade Spinnerbaits',
+    },
+    {label: 'French Blade Spinnerbaits', value: 'French Blade Spinnerbaits'},
+    {label: 'Triple Blade Spinnerbaits', value: 'Triple Blade Spinnerbaits'},
+    {
+      label: 'Skirt and Trailer combinations',
+      value: 'Skirt and Trailer combinations',
+    },
+    {label: 'Offset Spinnerbaits', value: 'Offset Spinnerbaits'},
+    {
+      label: 'Silicone Skirts Spinnerbaits',
+      value: 'Silicone Skirts Spinnerbaits',
+    },
+    {label: 'Football Head Spinnerbaits', value: 'Football Head Spinnerbaits'},
+    {label: 'Flipping Spinnerbaits', value: 'Flipping Spinnerbaits'},
+  ],
+};
+
 const AddItem = ({navigation}) => {
   const [open, setOpen] = useState(null);
   const [result, setResult] = useState({
-    type: [],
+    type: null,
     season: [],
     waterTemp: [],
     timeOfDay: [],
@@ -148,9 +208,31 @@ const AddItem = ({navigation}) => {
     pattern: [],
     filePath: null,
   });
+  const [subTypeOpen, setSubTypeOpen] = useState(false);
+  const [subTypeValue, setSubTypeValue] = useState([]);
   const [pickerOpen, setPickerOpen] = useState(false);
-
   const TextRef = useRef();
+
+  useEffect(() => {
+    setResult({
+      type: null,
+      season: [],
+      waterTemp: [],
+      timeOfDay: [],
+      waterClarity: [],
+      opacity: [],
+      wind: [],
+      depth: [],
+      weatherCondition: [],
+      structure: [],
+      behavior: [],
+      instruction: [],
+      current: null,
+      pattern: [],
+      filePath: null,
+    });
+    setSubTypeValue([]);
+  }, []);
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -326,10 +408,13 @@ const AddItem = ({navigation}) => {
   const handlePick = (text, stateName) => {
     console.log('stateName ', stateName);
     const temp = result[stateName];
-    if (stateName === 'current') {
+    if (stateName === 'current' || stateName === 'type') {
       temp === text()
         ? setResult({...result, [stateName]: null})
         : setResult({...result, [stateName]: text()});
+      if (stateName === 'type') {
+        setSubTypeValue([]);
+      }
       console.log('isChanged ', result.current);
     } else if (!temp.includes(text()[0])) {
       setResult({...result, [stateName]: [...result[stateName], text()[0]]});
@@ -341,10 +426,20 @@ const AddItem = ({navigation}) => {
     }
   };
 
+  const handleSubTypePicker = text => {
+    const temp = subTypeValue;
+    if (!temp.includes(text()[0])) {
+      console.log('true');
+      setSubTypeValue([...subTypeValue, text()[0]]);
+    } else {
+      setSubTypeValue([...subTypeValue.filter(t => t !== text()[0])]);
+    }
+  };
+
   const handleSubmit = () => {
     if (
       !TextRef.current ||
-      !result.type.length ||
+      !subTypeValue.length ||
       !result.season.length ||
       !result.waterTemp.length ||
       !result.timeOfDay.length ||
@@ -371,7 +466,7 @@ const AddItem = ({navigation}) => {
         .doc()
         .set({
           name: TextRef.current,
-          type: result.type,
+          type: subTypeValue,
           season: result.season,
           waterTemp: result.waterTemp,
           timeOfDay: result.timeOfDay,
@@ -395,10 +490,11 @@ const AddItem = ({navigation}) => {
 
   const Dropdowns = () => {
     return Fields.map((field, index) => {
-      return field === 'current' ? (
+      return field === 'current' || field === 'type' ? (
         <View key={index}>
           <Text style={styles.labelText}>{field}</Text>
           <DropDownPicker
+            maxHeight={2000}
             open={open === index}
             value={result[field]}
             items={DropdownItems[index]}
@@ -406,6 +502,22 @@ const AddItem = ({navigation}) => {
             setOpen={() => handleOpen(index)}
             setValue={text => handlePick(text, field)}
           />
+          {field === 'type' && (
+            <View style={{paddingTop: 20}}>
+              <DropDownPicker
+                multiple={true}
+                min={0}
+                max={15}
+                maxHeight={2000}
+                open={subTypeOpen}
+                value={subTypeValue}
+                items={result.type ? typeItems[result.type] : []}
+                zIndex={1500 - index * 100 - 50}
+                setOpen={setSubTypeOpen}
+                setValue={text => handleSubTypePicker(text)}
+              />
+            </View>
+          )}
         </View>
       ) : (
         <View key={index}>
@@ -413,7 +525,8 @@ const AddItem = ({navigation}) => {
           <DropDownPicker
             multiple={true}
             min={0}
-            max={5}
+            max={15}
+            maxHeight={2000}
             open={open === index}
             value={result[field]}
             items={DropdownItems[index]}
