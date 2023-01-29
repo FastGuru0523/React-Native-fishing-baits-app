@@ -121,6 +121,20 @@ const DropdownItems = [
     {label: 'Wide wobble', value: 'Wide wobble'},
     {label: 'Silent', value: 'Silent'},
   ],
+  [
+    {label: 'Braided', value: 'Braided'},
+    {label: 'Monofilament', value: 'Monofilament'},
+    {label: 'Fluorocarbon', value: 'Fluorocarbon'},
+    {label: 'Copolymer', value: 'Copolymer'},
+  ],
+  [
+    {label: '2-6 lb', value: '2-6 lb'},
+    {label: '6-8 lb', value: '6-8 lb'},
+    {label: '8-10 lb', value: '8-10 lb'},
+    {label: '10-12 lb', value: '10-12 lb'},
+    {label: '12-15 lb', value: '12-15 lb'},
+    {label: '15-20 lb', value: '15-20 lb'},
+  ],
 ];
 
 const Fields = [
@@ -138,6 +152,8 @@ const Fields = [
   'instruction',
   'current',
   'pattern',
+  'line',
+  'pound',
 ];
 
 const typeItems = {
@@ -207,6 +223,8 @@ const AddItem = ({navigation}) => {
     current: null,
     pattern: [],
     filePath: null,
+    line: [],
+    pound: [],
   });
   const [subTypeOpen, setSubTypeOpen] = useState(false);
   const [subTypeValue, setSubTypeValue] = useState([]);
@@ -230,6 +248,8 @@ const AddItem = ({navigation}) => {
       current: null,
       pattern: [],
       filePath: null,
+      line: [],
+      pound: [],
     });
     setSubTypeValue([]);
   }, []);
@@ -452,7 +472,9 @@ const AddItem = ({navigation}) => {
       !result.structure.length ||
       !result.instruction.length ||
       !result.behavior.length ||
-      !result.current
+      !result.current ||
+      !result.line ||
+      !result.pound
     ) {
       Alert.alert(
         'Warning!',
@@ -481,6 +503,8 @@ const AddItem = ({navigation}) => {
           behavior: result.behavior,
           current: result.current,
           imageUri: result.filePath,
+          line: result.line,
+          pound: result.pound,
         })
         .then(res => {
           console.log('Bait added!', result);
@@ -498,7 +522,7 @@ const AddItem = ({navigation}) => {
             open={open === index}
             value={result[field]}
             items={DropdownItems[index]}
-            zIndex={1500 - index * 100}
+            zIndex={2000 - index * 100}
             setOpen={() => handleOpen(index)}
             setValue={text => handlePick(text, field)}
           />
@@ -625,7 +649,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   space: {
-    marginVertical: 50,
+    marginVertical: 100,
   },
 
   imagePickerStyle: {

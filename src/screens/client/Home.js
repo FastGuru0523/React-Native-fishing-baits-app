@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   Dimensions,
@@ -29,6 +30,7 @@ const Home = ({navigation}) => {
         <Image source={homeLogo} />
       </Pressable>
       <TouchableOpacity
+        style={{marginBottom: 30}}
         onPress={() => {
           navigation.navigate('AdminHome');
         }}>

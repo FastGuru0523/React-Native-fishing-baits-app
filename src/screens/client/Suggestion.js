@@ -6,15 +6,12 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import BackgroundComponent from '../../components/BackgroundComponent';
 import BaitCard from '../../components/BaitCard';
 import Header from '../../components/Header';
-const BaitImage1 = require('../../assets/images/baits/bait1.png');
-const BaitImage2 = require('../../assets/images/baits/bait2.png');
-const BaitImage3 = require('../../assets/images/baits/bait3.png');
-const BaitImage4 = require('../../assets/images/baits/bait4.png');
 
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -32,21 +29,22 @@ const Details = [
   'behavior',
 ];
 
+let descriptions = {
+  structure: '',
+  instruction: '',
+};
+
 const Suggestion = ({navigation, route}) => {
-  // console.log('isReceive ', route.params.Request);
   const [baitData, setBaitData] = useState([]);
   const Request = route.params.Request;
 
   const filterWithRequest = temp => {
     const baits = [];
-    // console.log('temp ', temp[0]);
     temp.map(item => {
       let isIncluded = true;
-      // console.log('item ', item.data.name);
       Details.map(detail => {
         if (!item.data[detail].includes(Request[detail])) {
           isIncluded = false;
-          // console.log('hi');
         }
       });
       if (isIncluded) {
@@ -54,7 +52,6 @@ const Suggestion = ({navigation, route}) => {
       }
     });
     setBaitData(baits);
-    // console.log('baitData ', baitData);
   };
 
   useEffect(() => {
@@ -67,19 +64,30 @@ const Suggestion = ({navigation, route}) => {
           const bait = {};
           bait.data = doc.data();
           bait.id = doc.id;
-          // console.log('bait ', bait);
           temp.push(bait);
         });
-        // setBaitData(temp);
         filterWithRequest(temp);
       });
-  });
 
-  const RenderBaitCard = () => {
-    return baitData.map((bait, index) => {
-      return <BaitCard key={index} detail={bait} />;
-    });
-  };
+    firestore()
+      .collection('structure')
+      .get()
+      .then(res => {
+        res.forEach(doc => {
+          if (
+            doc.data().season === Request.season &&
+            doc.data().waterClearity === Request.waterClarity
+          ) {
+            descriptions.structure = doc.data().description;
+          }
+        });
+      });
+  }, []);
+
+  const RenderBaitCard = () =>
+    baitData.map((bait, index) => (
+      <BaitCard key={index} detail={bait} description={descriptions} />
+    ));
 
   return (
     <View style={styles.container}>
@@ -112,8 +120,21 @@ const Suggestion = ({navigation, route}) => {
           </Text>
         </View>
         <View style={{flex: 1, paddingHorizontal: 45}}>
-          <RenderBaitCard />
+          {baitData ? (
+            <RenderBaitCard />
+          ) : (
+            <Text>There's no matched baits...</Text>
+          )}
         </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Home');
+          }}>
+          <Text style={{textAlign: 'right', paddingRight: 30}}>
+            Go to home...
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

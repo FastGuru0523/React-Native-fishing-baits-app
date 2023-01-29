@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonComponent from './ButtonComponent';
 
-const BaitCard = ({detail}) => {
-  const [state, setState] = useState({
+const BaitCard = ({detail, description}) => {
+  const [open, setOpen] = useState({
     pattern: false,
     addInfo: false,
     structure: false,
@@ -25,24 +25,22 @@ const BaitCard = ({detail}) => {
         <Text style={styles.baitName}>{detail.name}</Text>
       </View>
 
-      <View style={state.pattern && styles.fullContainer}>
+      <View style={open.pattern && styles.fullContainer}>
         <View
-          style={
-            state.pattern ? styles.openedFeature : styles.featureContainer
-          }>
+          style={open.pattern ? styles.openedFeature : styles.featureContainer}>
           <View>
             <Text style={styles.featureText}>Pattern for Spring</Text>
           </View>
           <Pressable
             onPress={() => {
-              setState({pattern: !state.pattern});
+              setOpen({...open, pattern: !open.pattern});
             }}>
             <Text style={styles.ReadMoreText}>
-              {state.pattern ? 'Read Less' : 'Read More'}
+              {open.pattern ? 'Read Less' : 'Read More'}
             </Text>
           </Pressable>
         </View>
-        {state.pattern && (
+        {open.pattern && (
           <View>
             <Text>
               Spring Clear Bream/bluegill-natural patterns green/yellow base
@@ -52,24 +50,22 @@ const BaitCard = ({detail}) => {
           </View>
         )}
       </View>
-      <View style={state.addInfo && styles.fullContainer}>
+      <View style={open.addInfo && styles.fullContainer}>
         <View
-          style={
-            state.addInfo ? styles.openedFeature : styles.featureContainer
-          }>
+          style={open.addInfo ? styles.openedFeature : styles.featureContainer}>
           <View>
             <Text style={styles.featureText}>Additional Info</Text>
           </View>
           <Pressable
             onPress={() => {
-              setState({addInfo: !state.addInfo});
+              setOpen({addInfo: !open.addInfo});
             }}>
             <Text style={styles.ReadMoreText}>
-              {state.addInfo ? 'Read Less' : 'Read More'}
+              {open.addInfo ? 'Read Less' : 'Read More'}
             </Text>
           </Pressable>
         </View>
-        {state.addInfo && (
+        {open.addInfo && (
           <View>
             <Text>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
@@ -79,50 +75,46 @@ const BaitCard = ({detail}) => {
           </View>
         )}
       </View>
-      <View style={state.structure && styles.fullContainer}>
+      <View style={open.structure && styles.fullContainer}>
         <View
           style={
-            state.structure ? styles.openedFeature : styles.featureContainer
+            open.structure ? styles.openedFeature : styles.featureContainer
           }>
           <View>
-            <Text style={styles.featureText}>Pattern for Spring</Text>
+            <Text style={styles.featureText}>structure</Text>
           </View>
           <Pressable
             style={{justifyContent: 'center'}}
             onPress={() => {
-              setState({structure: !state.structure});
+              setOpen({structure: !open.structure});
             }}>
             <Image source={dropDownImage} style={styles.iconImage} />
           </Pressable>
         </View>
-        {state.structure && (
+        {open.structure && (
           <View>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              ullamcorper risus nisl, vitae molestie tellus rutrum eget.Lorem
-              ipsum dolor sit amet, consectetur.
-            </Text>
+            <Text>{description.structure}</Text>
           </View>
         )}
       </View>
-      <View style={state.instruction && styles.fullContainer}>
+      <View style={open.instruction && styles.fullContainer}>
         <View
           style={
-            state.instruction ? styles.openedFeature : styles.featureContainer
+            open.instruction ? styles.openedFeature : styles.featureContainer
           }>
           <View>
             <Text style={styles.featureText}>Instruction</Text>
           </View>
           <Pressable
             onPress={() => {
-              setState({instruction: !state.instruction});
+              setOpen({instruction: !open.instruction});
             }}>
             <Text style={styles.ReadMoreText}>
-              {state.instruction ? 'Read Less' : 'Read More'}
+              {open.instruction ? 'Read Less' : 'Read More'}
             </Text>
           </Pressable>
         </View>
-        {state.instruction && (
+        {open.instruction && (
           <View>
             <Text>
               Wake Baits When the bait fish start migrating into the backs of
