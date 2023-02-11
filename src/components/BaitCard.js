@@ -42,7 +42,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.pattern && (
           <View>
-            <Text>
+            <Text style={styles.descText}>
               Spring Clear Bream/bluegill-natural patterns green/yellow base
               with small amounts of chartreuse and orange highlights. Shad- What
               base with chartreuse or sexy shad pattern.
@@ -67,7 +67,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.addInfo && (
           <View>
-            <Text>
+            <Text style={styles.descText}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
               ullamcorper risus nisl, vitae molestie tellus rutrum eget.Lorem
               ipsum dolor sit amet, consectetur.
@@ -84,7 +84,7 @@ const BaitCard = ({detail, description}) => {
             <Text style={styles.featureText}>structure</Text>
           </View>
           <Pressable
-            style={{justifyContent: 'center'}}
+            style={styles.justifyCenter}
             onPress={() => {
               setOpen({structure: !open.structure});
             }}>
@@ -93,7 +93,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.structure && (
           <View>
-            <Text>{description.structure}</Text>
+            <Text style={styles.descText}>{description.structure}</Text>
           </View>
         )}
       </View>
@@ -116,7 +116,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.instruction && (
           <View>
-            <Text>
+            <Text style={styles.descText}>
               Wake Baits When the bait fish start migrating into the backs of
               pockets, the wake bait triggers and aggressive feeding response. “
               During the fall, you can throw it around schooling fish first
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 35,
     textAlign: 'center',
+    color: 'black',
   },
   fullContainer: {
     backgroundColor: '#eee',
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
   ReadMoreText: {
     fontSize: 13,
     lineHeight: 16,
+    color: 'black',
     fontWeight: '400',
     textDecorationLine: 'underline',
   },
@@ -209,6 +211,12 @@ const styles = StyleSheet.create({
   iconImage: {
     width: 20,
     height: 11,
+  },
+  descText: {
+    color: '#000',
+  },
+  justifyCenter: {
+    justifyContent: 'center',
   },
 });
 export default BaitCard;

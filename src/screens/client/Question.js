@@ -114,6 +114,8 @@ const RequestData = {
   behavior: '',
 };
 
+let answerSelected = false;
+
 const DropDown = ({header}) => {
   const Index = CardQuestion.indexOf(header);
   const currentItems = CardItems[Index];
@@ -123,6 +125,7 @@ const DropDown = ({header}) => {
 
   const handleSetValue = text => {
     setValue(text);
+    answerSelected = true;
     RequestData[Details[Index]] = text();
     // console.log('request data ', RequestData);
   };
@@ -156,12 +159,10 @@ const Question = ({navigation}) => {
   const swiperRef = useRef();
 
   const handleClick = () => {
-    // if (index % 2 === 0) {
-    //   swiperRef.current.swipeLeft(true);
-    // } else {
-    //   swiperRef.current.swipeRight(true);
-    // }
-    swiperRef.current.swipeLeft(false);
+    if (answerSelected) {
+      swiperRef.current.swipeLeft(false);
+      answerSelected = false;
+    }
   };
   return (
     <View style={styles.container}>
@@ -263,6 +264,7 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontWeight: '400',
     marginBottom: 10,
+    color: 'black',
     textAlign: 'center',
   },
   button: {

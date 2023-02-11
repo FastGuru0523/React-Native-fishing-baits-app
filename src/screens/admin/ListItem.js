@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react-native/no-inline-styles */
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
 import {
@@ -10,49 +13,16 @@ import {
   View,
 } from 'react-native';
 
-const Item = ({data}) => (
-  <View style={styles.itemCard}>
-    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-      <Image
-        style={{width: 250, height: 200, resizeMode: 'stretch'}}
-        source={{
-          uri: data.imageUri,
-        }}
-      />
-    </View>
-    <Text style={styles.smallText}>Name: {data.name}</Text>
-    <Text style={styles.smallText}>Type: {data.type.toString()}</Text>
-    <Text style={styles.smallText}>Season: {data.season.toString()}</Text>
-    <Text style={styles.smallText}>
-      Water Temperature: {data.waterTemp.toString()}
-    </Text>
-    <Text style={styles.smallText}>
-      Time of day: {data.timeOfDay.toString()}
-    </Text>
-    <Text style={styles.smallText}>
-      Water Clarity: {data.waterClarity.toString()}
-    </Text>
-    <Text style={styles.smallText}>Pattern: {data.pattern.toString()}</Text>
-    <Text style={styles.smallText}>Opacity: {data.opacity.toString()}</Text>
-    <Text style={styles.smallText}>Wind: {data.wind.toString()}</Text>
-    <Text style={styles.smallText}>Depth: {data.depth.toString()}</Text>
-    <Text style={styles.smallText}>
-      Weather Condition: {data.weatherCondition.toString()}
-    </Text>
-    <Text style={styles.smallText}>current: {data.current}</Text>
-    <Text style={styles.smallText}>Structure: {data.structure.toString()}</Text>
-    <Text style={styles.smallText}>Behavior: {data.behavior.toString()}</Text>
-    <Text style={styles.smallText}>
-      Instruction: {data.instruction.toString()}
-    </Text>
-  </View>
-);
-
 const ListItem = ({navigation}) => {
-  const renderItem = ({item}) => <Item data={item.data} />;
+  const deleteItem = key => {
+    firestore()
+      .collection('baits')
+      .doc(key)
+      .delete()
+      .then(res => getItems());
+  };
 
-  const [allBaits, setAllBaits] = useState([]);
-  useEffect(() => {
+  const getItems = () => {
     firestore()
       .collection('baits')
       .get()
@@ -62,11 +32,74 @@ const ListItem = ({navigation}) => {
           const bait = {};
           bait.data = doc.data();
           bait.id = doc.id;
-          console.log('bait ', bait);
+          // console.log('bait ', bait);
           temp.push(bait);
         });
         setAllBaits(temp);
       });
+  };
+
+  const Item = ({data, baitId}) => (
+    <View style={styles.itemCard}>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Image
+          style={{width: 250, height: 200, resizeMode: 'stretch'}}
+          source={{
+            uri: data.imageUri,
+          }}
+        />
+      </View>
+      <Text style={styles.smallText}>Name: {data.name}</Text>
+      <Text style={styles.smallText}>Type: {data.type.toString()}</Text>
+      <Text style={styles.smallText}>Season: {data.season.toString()}</Text>
+      <Text style={styles.smallText}>
+        Water Temperature: {data.waterTemp.toString()}
+      </Text>
+      <Text style={styles.smallText}>
+        Time of day: {data.timeOfDay.toString()}
+      </Text>
+      <Text style={styles.smallText}>
+        Water Clarity: {data.waterClarity.toString()}
+      </Text>
+      <Text style={styles.smallText}>Pattern: {data.pattern.toString()}</Text>
+      <Text style={styles.smallText}>Opacity: {data.opacity.toString()}</Text>
+      <Text style={styles.smallText}>Wind: {data.wind.toString()}</Text>
+      <Text style={styles.smallText}>Depth: {data.depth.toString()}</Text>
+      <Text style={styles.smallText}>
+        Weather Condition: {data.weatherCondition.toString()}
+      </Text>
+      <Text style={styles.smallText}>current: {data.current}</Text>
+      <Text style={styles.smallText}>
+        Structure: {data.structure.toString()}
+      </Text>
+      <Text style={styles.smallText}>Behavior: {data.behavior.toString()}</Text>
+      <Text style={styles.smallText}>
+        Instruction: {data.instruction.toString()}
+      </Text>
+      <View style={styles.btnView}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('EditItem', {itemId: baitId});
+          }}>
+          <Text style={[styles.btnText, {backgroundColor: '#2a8ab7'}]}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            deleteItem(baitId);
+          }}>
+          <Text style={styles.btnText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const renderItem = ({item}) => <Item baitId={item.id} data={item.data} />;
+
+  const [allBaits, setAllBaits] = useState([]);
+  useEffect(() => {
+    getItems();
   }, []);
   return (
     <SafeAreaView style={styles.main}>
@@ -125,6 +158,24 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     textAlign: 'left',
+    color: 'black',
+  },
+  btnText: {
+    fontSize: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#ff4d4d',
+    borderRadius: 3,
+    color: '#fefefe',
+    textAlign: 'center',
+    marginRight: 10,
+  },
+
+  btnView: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });
 export default ListItem;

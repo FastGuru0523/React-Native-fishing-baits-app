@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {Component} from 'react';
 import {LogBox} from 'react-native';
 import AddItem from './src/screens/admin/AddItem';
+import EditItem from './src/screens/admin/EditBait';
 import AdminHome from './src/screens/admin/Home';
 import ListItem from './src/screens/admin/ListItem';
 import Home from './src/screens/client/Home';
@@ -48,6 +49,11 @@ const AppNavigator = () => {
           name="ListItem"
           component={ListItem}
           options={{this: 'ListItem'}}
+        />
+        <Stack.Screen
+          name="EditItem"
+          component={EditItem}
+          options={{this: 'EditItem'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

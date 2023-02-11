@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
 import {

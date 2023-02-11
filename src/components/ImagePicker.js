@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 20,
+    color: 'black',
   },
   textStyle: {
     padding: 10,

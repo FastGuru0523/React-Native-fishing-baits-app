@@ -43,10 +43,25 @@ const DropdownItems = [
     {label: 'Winter', value: 'Winter'},
   ],
   [
-    {label: '38-50', value: '38-50'},
-    {label: '45-60', value: '45-60'},
-    {label: '60-68', value: '60-68'},
-    {label: '69+', value: '69+'},
+    {label: '38-40', value: '38-40'},
+    {label: '40-42', value: '40-42'},
+    {label: '42-44', value: '42-44'},
+    {label: '44-46', value: '44-46'},
+    {label: '46-48', value: '46-48'},
+    {label: '48-50', value: '48-50'},
+    {label: '50-52', value: '50-52'},
+    {label: '52-54', value: '52-54'},
+    {label: '54-56', value: '54-56'},
+    {label: '56-58', value: '56-58'},
+    {label: '58-60', value: '58-60'},
+    {label: '60-62', value: '60-62'},
+    {label: '62-64', value: '62-64'},
+    {label: '64-66', value: '64-66'},
+    {label: '66-68', value: '66-68'},
+    {label: '68-70', value: '68-70'},
+    {label: '70-72', value: '70-72'},
+    {label: '72-74', value: '72-74'},
+    {label: '74+', value: '74+'},
   ],
   [
     {label: 'Sunrise', value: 'Sunrise'},
@@ -84,9 +99,11 @@ const DropdownItems = [
     {label: 'Raining', value: 'Raining'},
   ],
   [
-    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
-    {label: 'Rock', value: 'Rock'},
-    {label: 'Grass', value: 'Grass'},
+    {label: 'DAms', value: 'DAms'},
+    {label: 'Drop-offs', value: 'Drop-offs'},
+    {label: 'Reffs', value: 'Reffs'},
+    {label: 'Brush piles', value: 'Brush piles'},
+    {label: 'Points', value: 'Points'},
   ],
   [
     {label: 'Skittish', value: 'Skittish'},
@@ -380,7 +397,7 @@ const AddItem = ({navigation}) => {
         <View style={styles.container}>
           <Image
             source={{
-              uri: 'data:image/jpeg;base64,' + result.filePath,
+              uri: 'data:image/png;base64,' + result.filePath,
             }}
             style={styles.imageStyle}
           />
@@ -417,12 +434,10 @@ const AddItem = ({navigation}) => {
 
   const handleChange = text => {
     TextRef.current = text;
-    console.log(text);
   };
 
   const handleOpen = index => {
     open !== index ? setOpen(index) : setOpen(null);
-    console.log('open ', open);
   };
 
   const handlePick = (text, stateName) => {
@@ -536,7 +551,7 @@ const AddItem = ({navigation}) => {
                 open={subTypeOpen}
                 value={subTypeValue}
                 items={result.type ? typeItems[result.type] : []}
-                zIndex={1500 - index * 100 - 50}
+                zIndex={2000 - index * 100 - 50}
                 setOpen={setSubTypeOpen}
                 setValue={text => handleSubTypePicker(text)}
               />
@@ -554,7 +569,7 @@ const AddItem = ({navigation}) => {
             open={open === index}
             value={result[field]}
             items={DropdownItems[index]}
-            zIndex={1500 - index * 100}
+            zIndex={2000 - index * 100}
             setOpen={() => handleOpen(index)}
             setValue={text => handlePick(text, field)}
           />
@@ -568,6 +583,7 @@ const AddItem = ({navigation}) => {
       <Text style={styles.title}>Add New Bait</Text>
       <View>
         <Text style={styles.labelText}>Bait Name</Text>
+        <Text style={styles.subTitleText}>{TextRef.current}</Text>
         <TextInput
           style={styles.itemInput}
           onChangeText={text => handleChange(text)}
@@ -616,6 +632,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 25,
     textAlign: 'center',
+    color: 'black',
   },
   labelText: {
     fontSize: 15,
@@ -676,6 +693,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 20,
+    color: 'black',
+  },
+  subTitleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: 'white',
   },
   textStyle: {
     padding: 10,
