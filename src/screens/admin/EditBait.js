@@ -1,5 +1,6 @@
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-alert */
+/* eslint-disable react/no-unstable-nested-components */
 import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -224,7 +225,9 @@ const typeItems = {
   ],
 };
 
-const AddItem = ({navigation}) => {
+const EditItem = ({navigation, route}) => {
+  const itemId = route.params.itemId;
+
   const [open, setOpen] = useState(null);
   const [result, setResult] = useState({
     type: null,
@@ -247,30 +250,55 @@ const AddItem = ({navigation}) => {
   });
   const [subTypeOpen, setSubTypeOpen] = useState(false);
   const [subTypeValue, setSubTypeValue] = useState([]);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(true);
   const TextRef = useRef();
 
-  useEffect(() => {
+  const setItemValue = itemData => {
+    console.log('itemData ', itemData);
     setResult({
-      type: null,
-      season: [],
-      waterTemp: [],
-      timeOfDay: [],
-      waterClarity: [],
-      opacity: [],
-      wind: [],
-      depth: [],
-      weatherCondition: [],
-      structure: [],
-      behavior: [],
-      instruction: [],
-      current: null,
-      pattern: [],
-      filePath: null,
-      line: [],
-      pound: [],
+      ...result,
+      type: itemData.groupType,
+      season: [...itemData.season],
+      waterTemp: [...itemData.waterTemp],
+      timeOfDay: [...itemData.timeOfDay],
+      waterClarity: [...itemData.waterClarity],
+      opacity: [...itemData.opacity],
+      wind: [...itemData.wind],
+      depth: [...itemData.depth],
+      weatherCondition: [...itemData.weatherCondition],
+      structure: [...itemData.structure],
+      behavior: [...itemData.behavior],
+      instruction: [...itemData.instruction],
+      current: itemData.current,
+      pattern: [...itemData.pattern],
+      line: [...itemData.line],
+      pound: [...itemData.pound],
+      name: itemData.name,
+      filePath: itemData.imageUri,
     });
-    setSubTypeValue([]);
+    setSubTypeValue([...itemData.type]);
+    console.log('baitData ', result);
+  };
+
+  const getItem = () => {
+    firestore()
+      .collection('baits')
+      .doc(itemId)
+      .get()
+      .then(res => {
+        setItemValue(res.data());
+      });
+  };
+
+  useEffect(() => {
+    getItem();
+    // setSubTypeValue([]);
+    console.log('HI==========>>>>>>>>', itemId);
+    console.log(
+      'bait name current =======>>>>>>>>> ',
+      TextRef.current,
+      result.name,
+    );
   }, []);
 
   const requestCameraPermission = async () => {
@@ -335,13 +363,13 @@ const AddItem = ({navigation}) => {
         if (response.didCancel) {
           alert('User cancelled camera picker');
           return;
-        } else if (response.errorCode == 'camera_unavailable') {
+        } else if (response.errorCode === 'camera_unavailable') {
           alert('Camera not available on device');
           return;
-        } else if (response.errorCode == 'permission') {
+        } else if (response.errorCode === 'permission') {
           alert('Permission not satisfied');
           return;
-        } else if (response.errorCode == 'others') {
+        } else if (response.errorCode === 'others') {
           alert(response.errorMessage);
           return;
         }
@@ -371,13 +399,13 @@ const AddItem = ({navigation}) => {
       if (response.didCancel) {
         alert('User cancelled camera picker');
         return;
-      } else if (response.errorCode == 'camera_unavailable') {
+      } else if (response.errorCode === 'camera_unavailable') {
         alert('Camera not available on device');
         return;
-      } else if (response.errorCode == 'permission') {
+      } else if (response.errorCode === 'permission') {
         alert('Permission not satisfied');
         return;
-      } else if (response.errorCode == 'others') {
+      } else if (response.errorCode === 'others') {
         alert(response.errorMessage);
         return;
       }
@@ -403,7 +431,6 @@ const AddItem = ({navigation}) => {
             }}
             style={styles.imageStyle}
           />
-          {/* <Image source={{uri: filePath.uri}} style={styles.imageStyle} /> */}
           <TouchableOpacity
             activeOpacity={0.5}
             style={styles.buttonStyle}
@@ -442,8 +469,8 @@ const AddItem = ({navigation}) => {
   };
 
   const handlePick = (text, stateName) => {
-    console.log('stateName ', stateName);
     const temp = result[stateName];
+    console.log('stateName ', result.line);
     if (stateName === 'current' || stateName === 'type') {
       temp === text()
         ? setResult({...result, [stateName]: null})
@@ -501,10 +528,15 @@ const AddItem = ({navigation}) => {
     } else {
       firestore()
         .collection('baits')
+        .doc(itemId)
+        .delete()
+        .then(res => console.log('deleted!'));
+
+      firestore()
+        .collection('baits')
         .doc()
         .set({
           name: TextRef.current,
-          groupType: result.type,
           type: subTypeValue,
           season: result.season,
           waterTemp: result.waterTemp,
@@ -582,10 +614,12 @@ const AddItem = ({navigation}) => {
 
   return (
     <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Add New Bait</Text>
+      <Text style={styles.title}>Edit Bait</Text>
       <View>
         <Text style={styles.labelText}>Bait Name</Text>
-        <Text style={styles.subTitleText}>{TextRef.current}</Text>
+        <Text style={styles.subTitleText}>
+          {TextRef.current ? TextRef.current : result.name}
+        </Text>
         <TextInput
           style={styles.itemInput}
           onChangeText={text => handleChange(text)}
@@ -608,7 +642,7 @@ const AddItem = ({navigation}) => {
         style={styles.button}
         underlayColor="white"
         onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Add Bait</Text>
+        <Text style={styles.buttonText}>Edit Bait</Text>
       </TouchableHighlight>
       <TouchableOpacity
         style={{paddingTop: 10}}
@@ -723,4 +757,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddItem;
+export default EditItem;
