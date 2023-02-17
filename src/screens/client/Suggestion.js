@@ -37,6 +37,7 @@ let descriptions = {
 
 const Suggestion = ({navigation, route}) => {
   const [baitData, setBaitData] = useState([]);
+  const [waring, setWarning] = useState(false);
   const Request = route.params.Request;
 
   const filterWithRequest = temp => {
@@ -56,6 +57,7 @@ const Suggestion = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    setWarning(true);
     firestore()
       .collection('baits')
       .get()
@@ -82,6 +84,7 @@ const Suggestion = ({navigation, route}) => {
             descriptions.structure = doc.data().description;
           }
         });
+        setWarning(false);
       });
   }, []);
 
@@ -120,6 +123,17 @@ const Suggestion = ({navigation, route}) => {
             For your fishing conditions
           </Text>
         </View>
+        {waring && (
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 20,
+              paddingHorizontal: 50,
+              textAlign: 'center',
+            }}>
+            Please wait a few seconds...
+          </Text>
+        )}
         <View style={{flex: 1, paddingHorizontal: 45}}>
           {baitData ? (
             <RenderBaitCard />
@@ -132,8 +146,14 @@ const Suggestion = ({navigation, route}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}>
-          <Text style={{textAlign: 'right', paddingRight: 30}}>
-            Go to home...
+          <Text
+            style={{
+              textAlign: 'right',
+              paddingRight: 30,
+              paddingTop: 50,
+              fontSize: 15,
+            }}>
+            Go to home screen...
           </Text>
         </TouchableOpacity>
       </ScrollView>

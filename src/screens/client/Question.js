@@ -39,10 +39,25 @@ const CardItems = [
     {label: 'No', value: 'No'},
   ],
   [
-    {label: '38-50', value: '38-50'},
-    {label: '45-60', value: '45-60'},
-    {label: '60-68', value: '60-68'},
-    {label: '69+', value: '69+'},
+    {label: '38-40', value: '38-40'},
+    {label: '40-42', value: '40-42'},
+    {label: '42-44', value: '42-44'},
+    {label: '44-46', value: '44-46'},
+    {label: '46-48', value: '46-48'},
+    {label: '48-50', value: '48-50'},
+    {label: '50-52', value: '50-52'},
+    {label: '52-54', value: '52-54'},
+    {label: '54-56', value: '54-56'},
+    {label: '56-58', value: '56-58'},
+    {label: '58-60', value: '58-60'},
+    {label: '60-62', value: '60-62'},
+    {label: '62-64', value: '62-64'},
+    {label: '64-66', value: '64-66'},
+    {label: '66-68', value: '66-68'},
+    {label: '68-70', value: '68-70'},
+    {label: '70-72', value: '70-72'},
+    {label: '72-74', value: '72-74'},
+    {label: '74+', value: '74+'},
   ],
   [
     {label: 'Sunrise', value: 'Sunrise'},
@@ -76,8 +91,13 @@ const CardItems = [
   ],
   [
     {label: 'Laydown & Brush', value: 'Laydown & Brush'},
-    {label: 'Rock', value: 'Rock'},
+    {label: 'Rocks', value: 'Rocks'},
     {label: 'Grass', value: 'Grass'},
+    {label: 'Dams', value: 'Dams'},
+    {label: 'Drop-offs', value: 'Drop-offs'},
+    {label: 'Reffs', value: 'Reffs'},
+    {label: 'Brush Piles', value: 'Brush Piles'},
+    {label: 'Points', value: 'Points'},
   ],
   [
     {label: 'Skittish', value: 'Skittish'},
@@ -127,7 +147,6 @@ const DropDown = ({header}) => {
     setValue(text);
     answerSelected = true;
     RequestData[Details[Index]] = text();
-    // console.log('request data ', RequestData);
   };
 
   return (
@@ -151,6 +170,9 @@ const DropDown = ({header}) => {
       }}
       setValue={handleSetValue}
       setItems={setItems}
+      zIndex={500}
+      searchable={true}
+      maxHeight={400}
     />
   );
 };
@@ -231,6 +253,10 @@ const Question = ({navigation}) => {
             cardHorizontalMargin={50}
             backgroundColor={'transparent'}
             stackSize={3}
+            disableRightSwipe={true}
+            disableBottomSwipe={true}
+            disableTopSwipe={true}
+            disableLeftSwipe={true}
           />
         </View>
       </View>
@@ -250,7 +276,7 @@ const styles = StyleSheet.create({
     width: deviceWidth,
   },
   card: {
-    height: 350,
+    height: deviceHeight * 0.6,
     borderRadius: 14,
     borderWidth: 2,
     borderColor: '#E8E8E8',

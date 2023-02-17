@@ -104,6 +104,11 @@ const ListItem = ({navigation}) => {
   return (
     <SafeAreaView style={styles.main}>
       <Text style={styles.title}>Baits List</Text>
+      {!allBaits.length && (
+        <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
+          There's no loaded bait...
+        </Text>
+      )}
       <FlatList
         data={allBaits}
         renderItem={renderItem}
@@ -132,7 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 25,
     textAlign: 'center',
-    color: 'white',
   },
   itemCard: {
     display: 'flex',

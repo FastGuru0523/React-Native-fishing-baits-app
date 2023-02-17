@@ -101,10 +101,13 @@ const DropdownItems = [
     {label: 'Raining', value: 'Raining'},
   ],
   [
-    {label: 'DAms', value: 'DAms'},
+    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
+    {label: 'Rocks', value: 'Rocks'},
+    {label: 'Grass', value: 'Grass'},
+    {label: 'Dams', value: 'Dams'},
     {label: 'Drop-offs', value: 'Drop-offs'},
     {label: 'Reffs', value: 'Reffs'},
-    {label: 'Brush piles', value: 'Brush piles'},
+    {label: 'Brush Piles', value: 'Brush Piles'},
     {label: 'Points', value: 'Points'},
   ],
   [
@@ -245,6 +248,7 @@ const AddItem = ({navigation}) => {
     line: [],
     pound: [],
   });
+  const [btnDisabled, setBtnDisabled] = useState(false);
   const [subTypeOpen, setSubTypeOpen] = useState(false);
   const [subTypeValue, setSubTypeValue] = useState([]);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -473,6 +477,7 @@ const AddItem = ({navigation}) => {
   };
 
   const handleSubmit = () => {
+    setBtnDisabled(true);
     if (
       !TextRef.current ||
       !subTypeValue.length ||
@@ -495,7 +500,7 @@ const AddItem = ({navigation}) => {
       Alert.alert(
         'Warning!',
         'Please fill up all fields',
-        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        [{text: 'OK', onPress: () => setBtnDisabled(false)}],
         {cancelable: false},
       );
     } else {
@@ -525,6 +530,7 @@ const AddItem = ({navigation}) => {
         })
         .then(res => {
           console.log('Bait added!', result);
+          navigation.navigate('ListItem');
         });
     }
   };
@@ -605,8 +611,9 @@ const AddItem = ({navigation}) => {
         <Dropdowns />
       </View>
       <TouchableHighlight
-        style={styles.button}
+        style={[styles.button, btnDisabled && {backgroundColor: '#2a8ab7'}]}
         underlayColor="white"
+        disabled={btnDisabled}
         onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add Bait</Text>
       </TouchableHighlight>

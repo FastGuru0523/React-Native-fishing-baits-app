@@ -102,10 +102,13 @@ const DropdownItems = [
     {label: 'Raining', value: 'Raining'},
   ],
   [
-    {label: 'DAms', value: 'DAms'},
+    {label: 'Laydown & Brush', value: 'Laydown & Brush'},
+    {label: 'Rocks', value: 'Rocks'},
+    {label: 'Grass', value: 'Grass'},
+    {label: 'Dams', value: 'Dams'},
     {label: 'Drop-offs', value: 'Drop-offs'},
     {label: 'Reffs', value: 'Reffs'},
-    {label: 'Brush piles', value: 'Brush piles'},
+    {label: 'Brush Piles', value: 'Brush Piles'},
     {label: 'Points', value: 'Points'},
   ],
   [
@@ -228,6 +231,7 @@ const typeItems = {
 const EditItem = ({navigation, route}) => {
   const itemId = route.params.itemId;
 
+  const [btnDisabled, setBtnDisabled] = useState(false);
   const [open, setOpen] = useState(null);
   const [result, setResult] = useState({
     type: null,
@@ -500,8 +504,9 @@ const EditItem = ({navigation, route}) => {
   };
 
   const handleSubmit = () => {
+    setBtnDisabled(true);
     if (
-      !TextRef.current ||
+      !(TextRef.current || result.name) ||
       !subTypeValue.length ||
       !result.season.length ||
       !result.waterTemp.length ||
@@ -522,7 +527,7 @@ const EditItem = ({navigation, route}) => {
       Alert.alert(
         'Warning!',
         'Please fill up all fields',
-        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        [{text: 'OK', onPress: () => setBtnDisabled(false)}],
         {cancelable: false},
       );
     } else {
@@ -536,7 +541,7 @@ const EditItem = ({navigation, route}) => {
         .collection('baits')
         .doc()
         .set({
-          name: TextRef.current,
+          name: TextRef.current ? TextRef.current : result.name,
           type: subTypeValue,
           season: result.season,
           waterTemp: result.waterTemp,
@@ -557,6 +562,7 @@ const EditItem = ({navigation, route}) => {
         })
         .then(res => {
           console.log('Bait added!', result);
+          navigation.navigate('ListItem');
         });
     }
   };
@@ -639,8 +645,9 @@ const EditItem = ({navigation, route}) => {
         <Dropdowns />
       </View>
       <TouchableHighlight
-        style={styles.button}
+        style={[styles.button, btnDisabled && {backgroundColor: '#c2c2c2'}]}
         underlayColor="white"
+        disabled={btnDisabled}
         onPress={handleSubmit}>
         <Text style={styles.buttonText}>Edit Bait</Text>
       </TouchableHighlight>
