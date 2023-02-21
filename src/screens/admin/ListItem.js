@@ -49,33 +49,84 @@ const ListItem = ({navigation}) => {
           }}
         />
       </View>
-      <Text style={styles.smallText}>Name: {data.name}</Text>
-      <Text style={styles.smallText}>Type: {data.type.toString()}</Text>
-      <Text style={styles.smallText}>Season: {data.season.toString()}</Text>
-      <Text style={styles.smallText}>
-        Water Temperature: {data.waterTemp.toString()}
-      </Text>
-      <Text style={styles.smallText}>
-        Time of day: {data.timeOfDay.toString()}
-      </Text>
-      <Text style={styles.smallText}>
-        Water Clarity: {data.waterClarity.toString()}
-      </Text>
-      <Text style={styles.smallText}>Pattern: {data.pattern.toString()}</Text>
-      <Text style={styles.smallText}>Opacity: {data.opacity.toString()}</Text>
-      <Text style={styles.smallText}>Wind: {data.wind.toString()}</Text>
-      <Text style={styles.smallText}>Depth: {data.depth.toString()}</Text>
-      <Text style={styles.smallText}>
-        Weather Condition: {data.weatherCondition.toString()}
-      </Text>
-      <Text style={styles.smallText}>current: {data.current}</Text>
-      <Text style={styles.smallText}>
-        Structure: {data.structure.toString()}
-      </Text>
-      <Text style={styles.smallText}>Behavior: {data.behavior.toString()}</Text>
-      <Text style={styles.smallText}>
-        Instruction: {data.instruction.toString()}
-      </Text>
+      <Text style={styles.smallText}>Name</Text>
+      <Text style={styles.normalText}>{data.name}</Text>
+
+      <Text style={styles.smallText}>Type</Text>
+      <Text style={styles.normalText}>{data.type.toString()}</Text>
+
+      <Text style={styles.smallText}>Season</Text>
+      <Text style={styles.normalText}>{data.season.toString()}</Text>
+
+      <Text style={styles.smallText}>Water Temperature</Text>
+      <Text style={styles.normalText}>{data.waterTemp.toString()}</Text>
+
+      <Text style={styles.smallText}>Time of day</Text>
+      <Text style={styles.normalText}>{data.timeOfDay.toString()}</Text>
+
+      <Text style={styles.smallText}>Water Clarity</Text>
+      <Text style={styles.normalText}>{data.waterClarity.toString()}</Text>
+
+      <Text style={styles.smallText}>Pattern</Text>
+      <Text style={styles.normalText}>{data.pattern.toString()}</Text>
+
+      <Text style={styles.smallText}>Opacity</Text>
+      <Text style={styles.normalText}>{data.opacity.toString()}</Text>
+
+      <Text style={styles.smallText}>Wind</Text>
+      <Text style={styles.normalText}>{data.wind.toString()}</Text>
+
+      <Text style={styles.smallText}>Depth</Text>
+      <Text style={styles.normalText}>{data.depth.toString()}</Text>
+
+      <Text style={styles.smallText}>Weather Condition:</Text>
+      <Text style={styles.normalText}>{data.weatherCondition.toString()}</Text>
+
+      <Text style={styles.smallText}>current</Text>
+      <Text style={styles.normalText}>{data.current}</Text>
+
+      <Text style={styles.smallText}>Structure</Text>
+      <Text style={styles.normalText}>{data.structure.toString()}</Text>
+
+      <Text style={styles.smallText}>Behavior</Text>
+      <Text style={styles.normalText}>{data.behavior.toString()}</Text>
+
+      <Text style={styles.smallText}>Instruction</Text>
+      <Text style={styles.normalText}>{data.instruction.toString()}</Text>
+
+      <Text style={styles.smallText}>Addtional Information</Text>
+      <Text style={styles.normalText}>{data.additionalInfo}</Text>
+
+      <Text style={styles.smallText}>Instruction Description</Text>
+      <Text style={styles.normalText}>{data.instructionDec}</Text>
+
+      <Text style={styles.smallText}>Structure for general</Text>
+      <Text style={styles.normalText}>{data.structureDec.general}</Text>
+
+      <Text style={styles.smallText}>Structure for spring</Text>
+      <Text style={styles.normalText}>{data.structureDec.spring}</Text>
+
+      <Text style={styles.smallText}>Structure for summer</Text>
+      <Text style={styles.normalText}>{data.structureDec.summer}</Text>
+
+      <Text style={styles.smallText}>Structure for fall</Text>
+      <Text style={styles.normalText}>{data.structureDec.fall}</Text>
+
+      <Text style={styles.smallText}>Structure for winter</Text>
+      <Text style={styles.normalText}>{data.structureDec.winter}</Text>
+
+      <Text style={styles.smallText}>Pattern for spring</Text>
+      <Text style={styles.normalText}>{data.patternDec.spring}</Text>
+
+      <Text style={styles.smallText}>Pattern for summer</Text>
+      <Text style={styles.normalText}>{data.patternDec.summer}</Text>
+
+      <Text style={styles.smallText}>Pattern for fall</Text>
+      <Text style={styles.normalText}>{data.patternDec.fall}</Text>
+
+      <Text style={styles.smallText}>Pattern for winter</Text>
+      <Text style={styles.normalText}>{data.patternDec.winter}</Text>
+
       <View style={styles.btnView}>
         <TouchableOpacity
           onPress={() => {
@@ -160,9 +211,16 @@ const styles = StyleSheet.create({
   smallText: {
     width: '100%',
     padding: 10,
+    fontSize: 17,
+    textAlign: 'left',
+    color: '#2a8ab7',
+  },
+  normalText: {
+    width: '100%',
     fontSize: 15,
     textAlign: 'left',
-    color: 'black',
+    color: '#555',
+    paddingLeft: 15,
   },
   btnText: {
     fontSize: 20,

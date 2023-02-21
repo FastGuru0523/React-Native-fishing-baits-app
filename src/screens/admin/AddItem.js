@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
@@ -247,12 +246,28 @@ const AddItem = ({navigation}) => {
     filePath: null,
     line: [],
     pound: [],
+    additionalInfo: '',
+    instructionDec: '',
+    structureDec: {
+      general: '',
+      spring: '',
+      summer: '',
+      fall: '',
+      winter: '',
+    },
+    patternDec: {
+      spring: '',
+      summer: '',
+      fall: '',
+      winter: '',
+    },
   });
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [subTypeOpen, setSubTypeOpen] = useState(false);
   const [subTypeValue, setSubTypeValue] = useState([]);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const TextRef = useRef();
+  // const TextRef = useRef();
+  const inputRef = useRef();
 
   useEffect(() => {
     setResult({
@@ -438,7 +453,8 @@ const AddItem = ({navigation}) => {
   };
 
   const handleChange = text => {
-    TextRef.current = text;
+    // TextRef.current = text;
+    inputRef.current = text;
   };
 
   const handleOpen = index => {
@@ -477,9 +493,9 @@ const AddItem = ({navigation}) => {
   };
 
   const handleSubmit = () => {
-    setBtnDisabled(true);
+    // setBtnDisabled(true);
     if (
-      !TextRef.current ||
+      !inputRef.current ||
       !subTypeValue.length ||
       !result.season.length ||
       !result.waterTemp.length ||
@@ -500,38 +516,36 @@ const AddItem = ({navigation}) => {
       Alert.alert(
         'Warning!',
         'Please fill up all fields',
-        [{text: 'OK', onPress: () => setBtnDisabled(false)}],
+        [{text: 'OK', onPress: () => {}}],
         {cancelable: false},
       );
     } else {
-      firestore()
-        .collection('baits')
-        .doc()
-        .set({
-          name: TextRef.current,
-          groupType: result.type,
-          type: subTypeValue,
-          season: result.season,
-          waterTemp: result.waterTemp,
-          timeOfDay: result.timeOfDay,
-          waterClarity: result.waterClarity,
-          pattern: result.pattern,
-          opacity: result.opacity,
-          wind: result.wind,
-          depth: result.depth,
-          weatherCondition: result.weatherCondition,
-          structure: result.structure,
-          instruction: result.instruction,
-          behavior: result.behavior,
-          current: result.current,
-          imageUri: result.filePath,
-          line: result.line,
-          pound: result.pound,
-        })
-        .then(res => {
-          console.log('Bait added!', result);
-          navigation.navigate('ListItem');
-        });
+      const baitData = {
+        name: inputRef.current,
+        groupType: result.type,
+        type: subTypeValue,
+        season: result.season,
+        waterTemp: result.waterTemp,
+        timeOfDay: result.timeOfDay,
+        waterClarity: result.waterClarity,
+        pattern: result.pattern,
+        opacity: result.opacity,
+        wind: result.wind,
+        depth: result.depth,
+        weatherCondition: result.weatherCondition,
+        structure: result.structure,
+        instruction: result.instruction,
+        behavior: result.behavior,
+        current: result.current,
+        imageUri: result.filePath,
+        line: result.line,
+        pound: result.pound,
+        additionalInfo: result.additionalInfo,
+        instructionDec: result.instructionDec,
+        patternDec: result.patternDec,
+        structureDec: result.structureDec,
+      };
+      navigation.navigate('AddDescription', {data: baitData});
     }
   };
 
@@ -591,7 +605,7 @@ const AddItem = ({navigation}) => {
       <Text style={styles.title}>Add New Bait</Text>
       <View>
         <Text style={styles.labelText}>Bait Name</Text>
-        <Text style={styles.subTitleText}>{TextRef.current}</Text>
+        <Text style={styles.subTitleText}>{inputRef.current}</Text>
         <TextInput
           style={styles.itemInput}
           onChangeText={text => handleChange(text)}
@@ -611,11 +625,11 @@ const AddItem = ({navigation}) => {
         <Dropdowns />
       </View>
       <TouchableHighlight
-        style={[styles.button, btnDisabled && {backgroundColor: '#2a8ab7'}]}
+        style={styles.button}
         underlayColor="white"
         disabled={btnDisabled}
         onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Add Bait</Text>
+        <Text style={styles.buttonText}>Add Descriptions</Text>
       </TouchableHighlight>
       <TouchableOpacity
         style={{paddingTop: 10}}

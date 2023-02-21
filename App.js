@@ -2,6 +2,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {Component} from 'react';
 import {LogBox} from 'react-native';
+import AddDescription from './src/screens/admin/AddDescription';
 import AddItem from './src/screens/admin/AddItem';
 import EditItem from './src/screens/admin/EditBait';
 import AdminHome from './src/screens/admin/Home';
@@ -54,6 +55,11 @@ const AppNavigator = () => {
           name="EditItem"
           component={EditItem}
           options={{this: 'EditItem'}}
+        />
+        <Stack.Screen
+          name="AddDescription"
+          component={AddDescription}
+          options={{this: 'AddDescription'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

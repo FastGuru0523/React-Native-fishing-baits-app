@@ -233,6 +233,7 @@ const EditItem = ({navigation, route}) => {
 
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [open, setOpen] = useState(null);
+  const [baitData, setBaitData] = useState({});
   const [result, setResult] = useState({
     type: null,
     season: [],
@@ -281,7 +282,6 @@ const EditItem = ({navigation, route}) => {
       filePath: itemData.imageUri,
     });
     setSubTypeValue([...itemData.type]);
-    console.log('baitData ', result);
   };
 
   const getItem = () => {
@@ -291,18 +291,12 @@ const EditItem = ({navigation, route}) => {
       .get()
       .then(res => {
         setItemValue(res.data());
+        setBaitData(res.data());
       });
   };
 
   useEffect(() => {
     getItem();
-    // setSubTypeValue([]);
-    console.log('HI==========>>>>>>>>', itemId);
-    console.log(
-      'bait name current =======>>>>>>>>> ',
-      TextRef.current,
-      result.name,
-    );
   }, []);
 
   const requestCameraPermission = async () => {
@@ -535,35 +529,36 @@ const EditItem = ({navigation, route}) => {
         .collection('baits')
         .doc(itemId)
         .delete()
-        .then(res => console.log('deleted!'));
+        .then(res => navigation.navigate('AddDescription', {data: baitData}));
 
-      firestore()
-        .collection('baits')
-        .doc()
-        .set({
-          name: TextRef.current ? TextRef.current : result.name,
-          type: subTypeValue,
-          season: result.season,
-          waterTemp: result.waterTemp,
-          timeOfDay: result.timeOfDay,
-          waterClarity: result.waterClarity,
-          pattern: result.pattern,
-          opacity: result.opacity,
-          wind: result.wind,
-          depth: result.depth,
-          weatherCondition: result.weatherCondition,
-          structure: result.structure,
-          instruction: result.instruction,
-          behavior: result.behavior,
-          current: result.current,
-          imageUri: result.filePath,
-          line: result.line,
-          pound: result.pound,
-        })
-        .then(res => {
-          console.log('Bait added!', result);
-          navigation.navigate('ListItem');
-        });
+      // firestore()
+      //   .collection('baits')
+      //   .doc()
+      //   .set({
+      //     name: TextRef.current ? TextRef.current : result.name,
+      //     type: subTypeValue,
+      //     season: result.season,
+      //     waterTemp: result.waterTemp,
+      //     timeOfDay: result.timeOfDay,
+      //     waterClarity: result.waterClarity,
+      //     pattern: result.pattern,
+      //     opacity: result.opacity,
+      //     wind: result.wind,
+      //     depth: result.depth,
+      //     weatherCondition: result.weatherCondition,
+      //     structure: result.structure,
+      //     instruction: result.instruction,
+      //     behavior: result.behavior,
+      //     current: result.current,
+      //     imageUri: result.filePath,
+      //     line: result.line,
+      //     pound: result.pound,
+      //   })
+      //   .then(res => {
+      //     console.log('Bait added!', result);
+      //     navigation.navigate('ListItem');
+      //   });
+      // navigation.navigate('AddDescription', {data: baitData});
     }
   };
 
