@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
@@ -30,11 +31,6 @@ const Details = [
   'behavior',
 ];
 
-let descriptions = {
-  structure: '',
-  instruction: '',
-};
-
 const Suggestion = ({navigation, route}) => {
   const [baitData, setBaitData] = useState([]);
   const [waring, setWarning] = useState(false);
@@ -45,18 +41,25 @@ const Suggestion = ({navigation, route}) => {
     temp.map(item => {
       let isIncluded = true;
       Details.map(detail => {
+        console.log(
+          '33333333333333',
+          item.data[detail].includes(Request[detail]),
+        );
         if (!item.data[detail].includes(Request[detail])) {
           isIncluded = false;
         }
       });
       if (isIncluded) {
         baits.push(item.data);
+        setWarning(false);
       }
     });
     setBaitData(baits);
+    console.log('77777777777777', baitData);
   };
 
   useEffect(() => {
+    console.log('111111111111111', Request);
     setWarning(true);
     firestore()
       .collection('baits')
@@ -70,28 +73,12 @@ const Suggestion = ({navigation, route}) => {
           temp.push(bait);
         });
         filterWithRequest(temp);
-      });
-
-    firestore()
-      .collection('structure')
-      .get()
-      .then(res => {
-        res.forEach(doc => {
-          if (
-            doc.data().season === Request.season &&
-            doc.data().waterClearity === Request.waterClarity
-          ) {
-            descriptions.structure = doc.data().description;
-          }
-        });
-        setWarning(false);
+        console.log('666666666666666', temp);
       });
   }, []);
 
   const RenderBaitCard = () =>
-    baitData.map((bait, index) => (
-      <BaitCard key={index} detail={bait} description={descriptions} />
-    ));
+    baitData.map((bait, index) => <BaitCard key={index} detail={bait} />);
 
   return (
     <View style={styles.container}>
@@ -135,11 +122,7 @@ const Suggestion = ({navigation, route}) => {
           </Text>
         )}
         <View style={{flex: 1, paddingHorizontal: 45}}>
-          {baitData ? (
-            <RenderBaitCard />
-          ) : (
-            <Text>There's no matched baits...</Text>
-          )}
+          <RenderBaitCard />
         </View>
 
         <TouchableOpacity

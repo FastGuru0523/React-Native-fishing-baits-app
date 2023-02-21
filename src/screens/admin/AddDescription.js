@@ -21,11 +21,11 @@ const AddDescription = ({navigation, route}) => {
     winter: baitData.patternDec ? baitData.patternDec.winter : '',
   });
   const [structure, onChangeStructure] = useState({
-    general: baitData.structure ? baitData.structure.general : '',
-    spring: baitData.structure ? baitData.structure.spring : '',
-    summer: baitData.structure ? baitData.structure.summer : '',
-    fall: baitData.structure ? baitData.structure.fall : '',
-    winter: baitData.structure ? baitData.structure.winter : '',
+    general: baitData.structure ? baitData.structureDec.general : '',
+    spring: baitData.structure ? baitData.structureDec.spring : '',
+    summer: baitData.structure ? baitData.structureDec.summer : '',
+    fall: baitData.structure ? baitData.structureDec.fall : '',
+    winter: baitData.structure ? baitData.structureDec.winter : '',
   });
   const [btnDisabled, setBtnDisabled] = useState(false);
 

@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonComponent from './ButtonComponent';
 
-const BaitCard = ({detail, description}) => {
+const BaitCard = ({detail}) => {
   const [open, setOpen] = useState({
     pattern: false,
     addInfo: false,
@@ -10,6 +10,10 @@ const BaitCard = ({detail, description}) => {
     instruction: false,
   });
   const dropDownImage = require('../assets/images/dropdown.png');
+
+  useEffect(() => {
+    console.log('5555555555', detail);
+  });
 
   return (
     <View style={styles.container}>
@@ -29,7 +33,7 @@ const BaitCard = ({detail, description}) => {
         <View
           style={open.pattern ? styles.openedFeature : styles.featureContainer}>
           <View>
-            <Text style={styles.featureText}>Pattern for Spring</Text>
+            <Text style={styles.featureText}>Pattern for {detail.season}</Text>
           </View>
           <Pressable
             onPress={() => {
@@ -43,9 +47,7 @@ const BaitCard = ({detail, description}) => {
         {open.pattern && (
           <View>
             <Text style={styles.descText}>
-              Spring Clear Bream/bluegill-natural patterns green/yellow base
-              with small amounts of chartreuse and orange highlights. Shad- What
-              base with chartreuse or sexy shad pattern.
+              {detail.patternDec[detail.season]}
             </Text>
           </View>
         )}
@@ -67,11 +69,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.addInfo && (
           <View>
-            <Text style={styles.descText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              ullamcorper risus nisl, vitae molestie tellus rutrum eget.Lorem
-              ipsum dolor sit amet, consectetur.
-            </Text>
+            <Text style={styles.descText}>{detail.additionalInfo}</Text>
           </View>
         )}
       </View>
@@ -81,7 +79,7 @@ const BaitCard = ({detail, description}) => {
             open.structure ? styles.openedFeature : styles.featureContainer
           }>
           <View>
-            <Text style={styles.featureText}>structure</Text>
+            <Text style={styles.featureText}>Structure</Text>
           </View>
           <Pressable
             style={styles.justifyCenter}
@@ -93,7 +91,9 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.structure && (
           <View>
-            <Text style={styles.descText}>{description.structure}</Text>
+            <Text style={styles.descText}>
+              {detail.structureDec[detail.season]}
+            </Text>
           </View>
         )}
       </View>
@@ -116,14 +116,7 @@ const BaitCard = ({detail, description}) => {
         </View>
         {open.instruction && (
           <View>
-            <Text style={styles.descText}>
-              Wake Baits When the bait fish start migrating into the backs of
-              pockets, the wake bait triggers and aggressive feeding response. “
-              During the fall, you can throw it around schooling fish first
-              thing in the morning, and pretty much get bit on it all day long.
-              When it’s overcast skies and there’s just a very ripple on the
-              water.
-            </Text>
+            <Text style={styles.descText}>{detail.instructionDec}</Text>
           </View>
         )}
       </View>

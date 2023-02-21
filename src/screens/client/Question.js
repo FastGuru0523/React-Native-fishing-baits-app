@@ -29,10 +29,10 @@ const CardQuestion = [
 
 const CardItems = [
   [
-    {label: 'Spring', value: 'Spring'},
-    {label: 'Summer', value: 'Summer'},
-    {label: 'Fall', value: 'Fall'},
-    {label: 'Winter', value: 'Winter'},
+    {label: 'spring', value: 'spring'},
+    {label: 'summer', value: 'summer'},
+    {label: 'fall', value: 'fall'},
+    {label: 'winter', value: 'winter'},
   ],
   [
     {label: 'Yes', value: 'Yes'},
