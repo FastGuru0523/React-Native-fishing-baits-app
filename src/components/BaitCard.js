@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonComponent from './ButtonComponent';
 
-const BaitCard = ({detail}) => {
+const BaitCard = ({detail, season}) => {
   const [open, setOpen] = useState({
     pattern: false,
     addInfo: false,
@@ -33,7 +33,7 @@ const BaitCard = ({detail}) => {
         <View
           style={open.pattern ? styles.openedFeature : styles.featureContainer}>
           <View>
-            <Text style={styles.featureText}>Pattern for {detail.season}</Text>
+            <Text style={styles.featureText}>Pattern for {season}</Text>
           </View>
           <Pressable
             onPress={() => {
@@ -46,9 +46,7 @@ const BaitCard = ({detail}) => {
         </View>
         {open.pattern && (
           <View>
-            <Text style={styles.descText}>
-              {detail.patternDec[detail.season]}
-            </Text>
+            <Text style={styles.descText}>{detail.patternDec[season]}</Text>
           </View>
         )}
       </View>
@@ -91,9 +89,7 @@ const BaitCard = ({detail}) => {
         </View>
         {open.structure && (
           <View>
-            <Text style={styles.descText}>
-              {detail.structureDec[detail.season]}
-            </Text>
+            <Text style={styles.descText}>{detail.structureDec[season]}</Text>
           </View>
         )}
       </View>

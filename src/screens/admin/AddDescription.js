@@ -21,11 +21,11 @@ const AddDescription = ({navigation, route}) => {
     winter: baitData.patternDec ? baitData.patternDec.winter : '',
   });
   const [structure, onChangeStructure] = useState({
-    general: baitData.structure ? baitData.structureDec.general : '',
-    spring: baitData.structure ? baitData.structureDec.spring : '',
-    summer: baitData.structure ? baitData.structureDec.summer : '',
-    fall: baitData.structure ? baitData.structureDec.fall : '',
-    winter: baitData.structure ? baitData.structureDec.winter : '',
+    general: baitData.structureDec ? baitData.structureDec.general : '',
+    spring: baitData.structureDec ? baitData.structureDec.spring : '',
+    summer: baitData.structureDec ? baitData.structureDec.summer : '',
+    fall: baitData.structureDec ? baitData.structureDec.fall : '',
+    winter: baitData.structureDec ? baitData.structureDec.winter : '',
   });
   const [btnDisabled, setBtnDisabled] = useState(false);
 
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
     padding: 10,
+    color: '#333',
   },
   space: {
     marginVertical: 50,

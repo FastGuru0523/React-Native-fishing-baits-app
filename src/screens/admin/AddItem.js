@@ -264,7 +264,7 @@ const AddItem = ({navigation}) => {
   });
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [subTypeOpen, setSubTypeOpen] = useState(false);
-  const [subTypeValue, setSubTypeValue] = useState([]);
+  const [subTypeValue, setSubTypeValue] = useState();
   const [pickerOpen, setPickerOpen] = useState(false);
   // const TextRef = useRef();
   const inputRef = useRef();
@@ -482,15 +482,15 @@ const AddItem = ({navigation}) => {
     }
   };
 
-  const handleSubTypePicker = text => {
-    const temp = subTypeValue;
-    if (!temp.includes(text()[0])) {
-      console.log('true');
-      setSubTypeValue([...subTypeValue, text()[0]]);
-    } else {
-      setSubTypeValue([...subTypeValue.filter(t => t !== text()[0])]);
-    }
-  };
+  // const handleSubTypePicker = text => {
+  //   const temp = subTypeValue;
+  //   if (!temp.includes(text()[0])) {
+  //     console.log('true');
+  //     setSubTypeValue([...subTypeValue, text()[0]]);
+  //   } else {
+  //     setSubTypeValue([...subTypeValue.filter(t => t !== text()[0])]);
+  //   }
+  // };
 
   const handleSubmit = () => {
     // setBtnDisabled(true);
@@ -566,16 +566,13 @@ const AddItem = ({navigation}) => {
           {field === 'type' && (
             <View style={{paddingTop: 20}}>
               <DropDownPicker
-                multiple={true}
-                min={0}
-                max={15}
                 maxHeight={2000}
                 open={subTypeOpen}
                 value={subTypeValue}
                 items={result.type ? typeItems[result.type] : []}
                 zIndex={2000 - index * 100 - 50}
                 setOpen={setSubTypeOpen}
-                setValue={text => handleSubTypePicker(text)}
+                setValue={text => setSubTypeValue(text)}
               />
             </View>
           )}

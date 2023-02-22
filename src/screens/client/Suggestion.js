@@ -78,7 +78,9 @@ const Suggestion = ({navigation, route}) => {
   }, []);
 
   const RenderBaitCard = () =>
-    baitData.map((bait, index) => <BaitCard key={index} detail={bait} />);
+    baitData.map((bait, index) => (
+      <BaitCard key={index} detail={bait} season={Request.season} />
+    ));
 
   return (
     <View style={styles.container}>
