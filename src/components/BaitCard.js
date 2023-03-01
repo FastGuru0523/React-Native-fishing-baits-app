@@ -20,7 +20,7 @@ const BaitCard = ({detail, season}) => {
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: detail.imageUri,
+            uri: `data:image/png;base64,${detail.imageUri}`,
           }}
           style={styles.image}
         />

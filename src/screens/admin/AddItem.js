@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Image,
@@ -12,11 +12,11 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {ScrollView} from 'react-native-virtualized-view';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { ScrollView } from 'react-native-virtualized-view';
 
 const DropdownItems = [
   [
